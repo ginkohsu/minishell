@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 16:55:04 by jinxu             #+#    #+#             */
-/*   Updated: 2025/09/23 15:55:01 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/09/25 15:40:02 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ typedef enum e_token_type {
 	TOKEN_HEREDOC,// <<
 	TOKEN_SQUOTE,// ''
 	TOKEN_DQUOTE,// ""
+	TOKEN_ENV_VAR, //$HOME
+	TOKEN_EXIT_STATUS, //$?
 	TOKEN_EOF //?
 } t_token_type;
 
@@ -35,10 +37,17 @@ typedef struct s_token {
 	t_token_type type;
 	char *value;
 } t_token;
-
-int				ft_isspace(char c);
+void			skip_whitespace(char **input)
 int				is_special_char(char c);
 t_token_type    get_token_type(char c);
+int				is_env_var_char(char c);
+char			*extract_word(char **input);
+void			handle_quote_char(char **input, 
+				t_token *collected_tokens, int *count);
+void			handle_redirect_char(char **input, 
+				t_token *collected_tokens, int *count);
+void			handle_single_special_char(char **input,
+				t_token *collected_tokens, int *count);
 
 t_token			*tokenize(char *input, int *token_count);
 

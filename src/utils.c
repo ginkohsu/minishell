@@ -6,12 +6,18 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:26:55 by jinxu             #+#    #+#             */
-/*   Updated: 2025/09/23 16:07:41 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/09/25 15:49:07 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "lexer.h"
 
-int	ft_isspace(char c)
+void skip_whitespace(char **input)
+{
+    while (**input && ft_isspace(**input))
+        (*input)++;
+}
+
+static int	ft_isspace(char c)
 {
 	return (c == ' ' || c == '\t' || c == '\n' 
 			|| c == '\r' || c == '\v' ||  c == '\f');
@@ -19,7 +25,8 @@ int	ft_isspace(char c)
 
 int	is_special_char(char c)
 {
-	return (c == '|' || c == '<' || c == '>' ||  c == '\'' || c == '"');
+	return (c == '|' || c == '<' || c == '>' ||  c == '\'' 
+			|| c == '"'|| c == '$');
 }
 
 t_token_type	get_token_type(char c)

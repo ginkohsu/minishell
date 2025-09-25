@@ -6,49 +6,47 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 17:16:48 by jinxu             #+#    #+#             */
-/*   Updated: 2025/09/22 20:30:50 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/09/25 15:50:14 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lexer.h"
 
-static void	skip_whitespace(char **input)
+static void	handle_special_char(char **input, t_token *collected_tokens, int *count)
 {
-	while (**input && ft_isspace(**input))
-		(*input)++;
+	char current;
+
+	current = **input;
+	if (current == '>' || current == '<')
+		handle_redirect_char(input, collected_tokens, count);
+	else if (current == '\'' || current == '"')
+		handle_quote_char(input, collected_tokens, count);
+	else if (current == '$')
+		handle_env_var_char(input, collected_tokens, count);
+	else if (current == '|')
+		handle_single_special_char(input, collected_tokens, count);
 }
 
-static char *extract_word(char **input)
+static void	handle_word_char(char **input, t_token *collected_tokens, int *count)
 {
-	char	*start;
-	int		len;
-	char	*word;
+		char	*word;
 
-	if (!input || !*input || !**input)
-		return (NULL);
-	start = *input;
-	len = 0;
-	while (**input && !ft_isspace(**input) && !is_special_char(**input))
-	{
-		(*input)++;
-		len++;
-	}
-	if (len == 0)
-		return (NULL);
-	word = malloc (len + 1);
-	if (!word)
-		return (NULL); //??????????????ERROR HANDLING
-	ft_strlcpy(word, start, (size_t)(len + 1));
-	return (word);
+		word = extract_word(input);
+		if (word)
+		{
+			collected_tokens[*count].type = TOKEN_WORD;
+			collected_tokens[*count].value = word;
+			(*count)++;
+		}
 }
 
 static void	process_char(char **input, t_token *collected_tokens, int *count)
 {
-	char	*word;
-	char	*value;
-
 	if (is_special_char(**input))
-	{
+		handle_special_char(input, collected_tokens, count);
+	else
+		handle_word_char(input, collected_tokens, count);
+/*	{
 		value = malloc(2);
 		if (!value)
 			return ;  //???error handling
@@ -68,7 +66,8 @@ static void	process_char(char **input, t_token *collected_tokens, int *count)
 			collected_tokens[*count].value = word;
 			(*count)++;
 		}
-	}
+	} 
+*/
 }
 
 static t_token	*copy_to_heap(t_token *collected, int count, int *token_count)
