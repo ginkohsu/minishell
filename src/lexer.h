@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 16:55:04 by jinxu             #+#    #+#             */
-/*   Updated: 2025/09/25 15:40:02 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/09/27 02:07:00 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,16 +37,17 @@ typedef struct s_token {
 	t_token_type type;
 	char *value;
 } t_token;
-void			skip_whitespace(char **input)
+void			skip_whitespace(char **input);
+int				ft_isspace(char c);
 int				is_special_char(char c);
-t_token_type    get_token_type(char c);
-int				is_env_var_char(char c);
 char			*extract_word(char **input);
 void			handle_quote_char(char **input, 
 				t_token *collected_tokens, int *count);
 void			handle_redirect_char(char **input, 
 				t_token *collected_tokens, int *count);
 void			handle_single_special_char(char **input,
+				t_token *collected_tokens, int *count);
+void			handle_env_var_char(char **input, 
 				t_token *collected_tokens, int *count);
 
 t_token			*tokenize(char *input, int *token_count);

@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:26:55 by jinxu             #+#    #+#             */
-/*   Updated: 2025/09/25 15:49:07 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/09/27 02:37:36 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "lexer.h"
@@ -17,7 +17,7 @@ void skip_whitespace(char **input)
         (*input)++;
 }
 
-static int	ft_isspace(char c)
+int	ft_isspace(char c)
 {
 	return (c == ' ' || c == '\t' || c == '\n' 
 			|| c == '\r' || c == '\v' ||  c == '\f');
@@ -29,24 +29,18 @@ int	is_special_char(char c)
 			|| c == '"'|| c == '$');
 }
 
-t_token_type	get_token_type(char c)
-{
-	if (c == '|')
-		return (TOKEN_PIPE);
-	if (c == '<')
-		return (TOKEN_REDIR_IN);
-	if (c == '>')
-		return (TOKEN_REDIR_OUT);
-	
-	return TOKEN_WORD;
-}
-
 //// below functins for testing only: ////////////////
 static const char *get_token_type_name(t_token_type type) {
 if (type == TOKEN_WORD) return "WORD";
 if (type == TOKEN_PIPE) return "PIPE";
 if (type == TOKEN_REDIR_IN) return "REDIR_IN";
 if (type == TOKEN_REDIR_OUT) return "REDIR_OUT";
+if (type == TOKEN_REDIR_APPEND) return "REDIR_APPEND";
+if (type == TOKEN_HEREDOC) return "HEREDOC";
+if (type == TOKEN_SQUOTE) return "SQUOTE";
+if (type == TOKEN_DQUOTE) return "DQUOTE";
+if (type == TOKEN_ENV_VAR) return "ENV_VAR";
+if (type == TOKEN_EXIT_STATUS) return "EXIT_STATUS";
 if (type == TOKEN_EOF) return "EOF";
 return "UNKNOWN";
 }

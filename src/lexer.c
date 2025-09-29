@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 17:16:48 by jinxu             #+#    #+#             */
-/*   Updated: 2025/09/25 15:50:14 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/09/29 10:26:28 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,5 +112,3 @@ t_token	*tokenize(char *input, int *token_count)
 		printf("warnng:truncated after %d tokens\n", MAX_TOKENS - 1);
 	return (copy_to_heap(collected_tokens, count, token_count));
 }
-
-

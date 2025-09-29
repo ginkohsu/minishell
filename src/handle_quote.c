@@ -6,9 +6,10 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 14:58:21 by jinxu             #+#    #+#             */
-/*   Updated: 2025/09/25 15:18:25 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/09/29 10:37:15 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+#include "lexer.h"
 
 static char	*handle_quoted_content(char **input, char quote_char)
 {
@@ -30,6 +31,7 @@ static char	*handle_quoted_content(char **input, char quote_char)
 		if (!content)
 			return (NULL); //ERROR HANDLING???????
 		ft_strlcpy(content, start, (size_t)(len + 1));
+		(*input)++;
 		return (content);
 	}
 	printf("Error: Unclosed quote\n");
@@ -39,7 +41,7 @@ static char	*handle_quoted_content(char **input, char quote_char)
 void	handle_quote_char(char **input, t_token *collected_tokens, int *count)
 {
 		char			current;
-		char			quoted_content;
+		char			*quoted_content;
 		t_token_type	type;
 
 		current = **input;
