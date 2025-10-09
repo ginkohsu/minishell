@@ -59,10 +59,16 @@ void	setup_redirections(t_redir *redirs)
 			fd = open(redirs->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if (fd == -1)
 			ft_error(NULL, redirs->filename, F_AST | OPEN_FAIL, 0);
-		if (redirs->type == REDIR_IN && dup2(fd, STDIN_FILENO) == -1)
-			ft_error("dup2 failed", NULL, F_AST, 1);
-		else if (dup2(fd, STDOUT_FILENO) == -1)
-			ft_error("dup2 failed", NULL, F_AST, 1);
+		if (redirs->type == REDIR_IN)
+		{
+			if (dup2(fd, STDIN_FILENO) == -1)
+				ft_error("dup2", NULL, F_AST | STRERROR, 1);
+		}
+		else
+		{
+			if (dup2(fd, STDOUT_FILENO) == -1)
+				ft_error("dup2", NULL, F_AST | STRERROR, 1);
+		}
 		close(fd);
 		redirs = redirs->next;
 	}
