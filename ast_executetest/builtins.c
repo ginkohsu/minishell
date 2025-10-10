@@ -18,12 +18,12 @@ int	ft_cd(char **av)
 	char	*entry;
 
 	if (av[1] && av[2])
-		ft_error("cd: too many arguments\nbuiltins.c:21\n", NULL, F_AST, 2);
+		ft_error("cd: too many arguments", NULL, F_AST, 2);
 	if (!av[1])
 	{
 		env = fetchenv("HOME");
 		if (!env)
-			ft_error("cd: HOME not set\nbuiltins.c:26\n", NULL, F_AST, 1);
+			ft_error("cd: HOME not set", NULL, F_AST, 1);
 		rmenv("PWD");
 		entry = ft_strjoin("PWD=", env[0]);
 		addenv(entry);
@@ -31,7 +31,7 @@ int	ft_cd(char **av)
 		return (0);
 	}
 	if (chdir(av[1]) == -1)
-		ft_error("cd: %s: %s\nbuiltins.c:34\n", av[1], STRERROR | P_OBJ | F_AST, 1);
+		ft_error("cd: %s", av[1], STRERROR | P_OBJ | F_AST, 1);
 	rmenv("PWD");
 	entry = ft_strjoin("PWD=", av[1]);
 	addenv(entry);
@@ -57,7 +57,8 @@ int	ft_exit(char **av)
 	i = 0;
 	while (av[1][++i])
 		if (!ft_isdigit(av[1][i - 1]))
-			ft_error("exit: %s: numeric argument required\nbuiltins.c:60\n", av[1], P_OBJ | F_AST, 2);
+			ft_error("exit: %s: numeric argument required", av[1],
+				P_OBJ | F_AST, 2);
 	free_ast_root();
 	exit((unsigned char)ft_atoi(av[1]));
 }

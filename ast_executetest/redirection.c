@@ -14,11 +14,27 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-static bool heredoc(char *delimiter)
+static void	redirect(char *file, int oflag, int perms, int io)
 {
-	int tmp;
-	int	len;
-	char *input;
+	int	fd;
+
+	if (perms)
+		fd = open(file, oflag, perms);
+	else
+		fd = open(file, oflag);
+	if (fd == -1)
+		ft_error(NULL, file, F_AST | OPEN_FAIL, 0);
+	if (dup2(fd, io) == -1)
+		ft_error("dup2", NULL, F_AST | STRERROR, 1);
+	close(fd);
+	fd = -1;
+}
+
+static bool	heredoc(char *delimiter)
+{
+	int		tmp;
+	int		len;
+	char	*input;
 
 	tmp = open("/tmp/minishell_heredoc", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (tmp == -1)
@@ -29,9 +45,9 @@ static bool heredoc(char *delimiter)
 	{
 		input = get_next_line(STDIN_FILENO);
 		if (!input)
-			break;
+			break ;
 		if (ft_strcmp(delimiter, input) == 0 && input[len] == '\n')
-			break;
+			break ;
 		write(tmp, input, len);
 	}
 	if (input)
@@ -41,35 +57,18 @@ static bool heredoc(char *delimiter)
 
 void	setup_redirections(t_redir *redirs)
 {
-	int fd;
-
 	while (redirs)
 	{
-		fd = -1;
-		if (redirs->type == REDIR_HEREDOC && heredoc(redirs->filename))
-		{
-			redirs = redirs->next;
-			continue;
-		}
+		if (redirs->type == REDIR_HEREDOC)
+			heredoc(redirs->filename);
 		else if (redirs->type == REDIR_IN)
-			fd = open(redirs->filename, O_RDONLY);
+			redirect(redirs->filename, O_RDONLY, 0, STDIN_FILENO);
 		else if (redirs->type == REDIR_OUT)
-			fd = open(redirs->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			redirect(redirs->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644,
+				STDOUT_FILENO);
 		else if (redirs->type == REDIR_APPEND)
-			fd = open(redirs->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		if (fd == -1)
-			ft_error(NULL, redirs->filename, F_AST | OPEN_FAIL, 0);
-		if (redirs->type == REDIR_IN)
-		{
-			if (dup2(fd, STDIN_FILENO) == -1)
-				ft_error("dup2", NULL, F_AST | STRERROR, 1);
-		}
-		else
-		{
-			if (dup2(fd, STDOUT_FILENO) == -1)
-				ft_error("dup2", NULL, F_AST | STRERROR, 1);
-		}
-		close(fd);
+			redirect(redirs->filename, O_WRONLY | O_CREAT | O_APPEND, 0644,
+				STDOUT_FILENO);
 		redirs = redirs->next;
 	}
 }

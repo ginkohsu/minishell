@@ -13,27 +13,21 @@
 #include "execution.h"
 #include <stdint.h>
 
-typedef struct s_table
-{
-	size_t		count;
-	char		**env;
-}				t_table;
-
-#define SORTED 1
-
 static t_table	*g_table = NULL;
 
-char	**fetchenv(char *str)
+char	**fetchenv(char *key)
 {
 	int		i;
 	size_t	len;
 
-	if (!str)
+	if (!key)
 		return (g_table->env);
-	len = ft_strlen(str);
+	len = 0;
+	while (key[len] && key[len] != '=')
+		len++;
 	i = -1;
 	while (g_table->env[++i])
-		if (ft_strncmp(str, g_table->env[i], len) == 0 
+		if (ft_strncmp(key, g_table->env[i], len) == 0
 			&& g_table->env[i][len] == '=')
 			return (&g_table->env[i]);
 	return (NULL);
@@ -74,12 +68,17 @@ void	addenv(char *entry)
 	size_t	word;
 	char	**new_env;
 
-	new_env = malloc((g_table->count + 2) * sizeof(char *));
+	new_env = malloc((g_table->count + 1 + (bool)(fetchenv(entry)))
+			* sizeof(char *));
 	if (!new_env)
 		return ;
 	word = -1;
 	while (g_table->env[++word])
 	{
+		len = ft_strchr(entry, '=') - entry;
+		if (ft_strncmp(entry, g_table->env[word], len) == 0
+			&& g_table->env[word][len] == '=')
+			continue ;
 		len = ft_strlen(g_table->env[word]);
 		new_env[word] = malloc((len + 1) * sizeof(char));
 		if (!new_env[word])
@@ -99,6 +98,8 @@ void	rmenv(char *key)
 	size_t	entry;
 	char	**new_env;
 
+	if (!fetchenv(key))
+		return ;
 	new_env = malloc(g_table->count * sizeof(char *));
 	if (!new_env)
 		return ;

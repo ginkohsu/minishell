@@ -9,7 +9,9 @@
 /*   Updated: 2025/09/30 13:28:28 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "ast.h"
+
 /*
 ** Complex test case with builtin and external commands
 ** Simulates: echo "hello" | cat > output.txt
@@ -31,7 +33,6 @@ t_ast	*create_test_ast(void)
 	redir->filename = ft_strdup("output.txt");
 	redir->next = NULL;
 	right->cmd.redirs = redir;
-
 	left = malloc(sizeof(t_ast));
 	left->type = CMD;
 	left->cmd.argv = malloc(3 * sizeof(char *));
@@ -39,7 +40,6 @@ t_ast	*create_test_ast(void)
 	left->cmd.argv[1] = ft_strdup("hello");
 	left->cmd.argv[2] = NULL;
 	left->cmd.redirs = NULL;
-
 	pipe_ast = malloc(sizeof(t_ast));
 	pipe_ast->type = PIPE;
 	pipe_ast->pipe.left = left;

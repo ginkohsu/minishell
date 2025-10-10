@@ -29,7 +29,6 @@ static t_ast	*create_simple_pipe_test(void)
 	right->cmd.argv[0] = ft_strdup("cat");
 	right->cmd.argv[1] = NULL;
 	right->cmd.redirs = NULL;
-
 	left = malloc(sizeof(t_ast));
 	left->type = CMD;
 	left->cmd.argv = malloc(4 * sizeof(char *));
@@ -38,7 +37,6 @@ static t_ast	*create_simple_pipe_test(void)
 	left->cmd.argv[2] = ft_strdup("world");
 	left->cmd.argv[3] = NULL;
 	left->cmd.redirs = NULL;
-
 	pipe_ast = malloc(sizeof(t_ast));
 	pipe_ast->type = PIPE;
 	pipe_ast->pipe.left = left;
@@ -87,13 +85,10 @@ int	main(int argc, char **argv, char **envp)
 
 	(void)argv;
 	initenv(envp);
-	
 	test = 1;
 	if (argc > 1)
 		test = ft_atoi(argv[1]);
-
 	printf("=== Simple AST Execution Tests (No Redirections) ===\n\n");
-
 	if (test == 1)
 	{
 		printf("Test 1: Single builtin command (echo)\n");
@@ -129,7 +124,6 @@ int	main(int argc, char **argv, char **envp)
 		printf("  3 - Pipe test\n");
 		return (1);
 	}
-
 	printf("\n---\n=== Test Complete ===\n");
 	return (0);
 }

@@ -14,22 +14,22 @@
 
 static t_ast	*g_ast_root = NULL;
 
-static int	recursive_count(t_ast *ast);
-static void	recursive_exec(t_ast *ast, t_pipe_ctx *ctx, int total);
-static void	cycle_pipes(t_pipe_ctx *ctx, int total);
+static int		recursive_count(t_ast *ast);
+static void		recursive_exec(t_ast *ast, t_pipe_ctx *ctx, int total);
+static void		cycle_pipes(t_pipe_ctx *ctx, int total);
+static void		wait_for_children(int *pid, int total);
 
 void	execute_ast(t_ast *ast)
 {
 	t_pipe_ctx	ctx;
 	int			total;
-	int			i;
 
 	if (!ast || (ast->type == CMD && (!ast->cmd.argv || !ast->cmd.argv[0])))
 		return ;
 	free_ast_root();
 	if (ast->type == CMD && is_builtin(ast->cmd.argv[0]) && !ast->cmd.redirs)
 	{
-		execute_parent_builtin(&ast->cmd);
+		addenv(ft_strprep("?=", ft_itoa(execute_parent_builtin(&ast->cmd))));
 		return ;
 	}
 	g_ast_root = ast;
@@ -44,10 +44,30 @@ void	execute_ast(t_ast *ast)
 		close(ctx.fd[LAST][WRITE]);
 		close(ctx.fd[LAST][READ]);
 	}
+	wait_for_children(ctx.pid, total);
+}
+
+static void	wait_for_children(int *pid, int total)
+{
+	int		i;
+	int		status;
+	int		last_status;
+	char	*entry;
+
 	i = -1;
-	while (++i < total)
-		waitpid(ctx.pid[i], NULL, 0);
-	free(ctx.pid);
+	while (++i < total - 1)
+		waitpid(pid[i], &status, 0);
+	last_status = 0;
+	waitpid(pid[total - 1], &last_status, 0);
+	free(pid);
+	if (WIFEXITED(last_status))
+		status = WEXITSTATUS(last_status);
+	else if (WIFSIGNALED(last_status))
+		status = 128 + WTERMSIG(last_status);
+	else
+		status = 1;
+	entry = ft_strprep("?=", ft_itoa(status));
+	addenv(entry);
 }
 
 void	free_ast_root(void)
@@ -69,10 +89,10 @@ static void	recursive_exec(t_ast *ast, t_pipe_ctx *ctx, int total)
 	if (ast->type == CMD)
 	{
 		if (ctx->index < total - 1 && pipe(ctx->fd[NEXT]) == -1)
-			ft_error("pipe failed\nexecution.c:67\n", ctx->pid, F_OBJ | F_AST, 1);
+			ft_error("pipe", ctx->pid, F_OBJ | F_AST | STRERROR, 1);
 		ctx->pid[ctx->index] = fork();
 		if (ctx->pid[ctx->index] == -1)
-			ft_error("fork failed\nexecution.c:70\n", ctx->pid, F_OBJ | F_AST, 1);
+			ft_error("fork", ctx->pid, F_OBJ | F_AST | STRERROR, 1);
 		if (ctx->pid[ctx->index] == 0)
 		{
 			if (total == 1)
@@ -84,8 +104,7 @@ static void	recursive_exec(t_ast *ast, t_pipe_ctx *ctx, int total)
 			else
 				middle_child(&ast->cmd, ctx->fd);
 		}
-		else if (ctx->index < total - 1)
-			cycle_pipes(ctx, total);
+		cycle_pipes(ctx, total);
 	}
 	else if (ast->type == PIPE)
 	{
@@ -106,5 +125,7 @@ static void	cycle_pipes(t_pipe_ctx *ctx, int total)
 		ctx->fd[LAST][WRITE] = ctx->fd[NEXT][WRITE];
 		ctx->fd[LAST][READ] = ctx->fd[NEXT][READ];
 	}
+	else
+		return ;
 	ctx->index++;
 }

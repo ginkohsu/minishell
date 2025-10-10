@@ -13,6 +13,19 @@
 #include "execution.h"
 
 /*
+** Debug utility functions - currently static/unused.
+** To enable: remove 'static' keyword and add prototype to execution.h
+**
+** These functions provide detailed tracing for:
+** - Command execution flow
+** - Pipe context state
+** - File descriptor management
+** - PATH resolution
+** - Environment operations
+** - AST structure visualization
+*/
+
+/*
 ** Debug flag - set to 1 to enable debug output
 ** Easy to toggle on/off during development
 */
@@ -21,7 +34,7 @@ static int	g_dbg_enabled = 0;
 /*
 ** Print debug message to stderr with [DBG] prefix
 */
-void	dbg_print(char *msg)
+__attribute__((unused)) static void	dbg_print(char *msg)
 {
 	if (!g_dbg_enabled)
 		return ;
@@ -31,7 +44,7 @@ void	dbg_print(char *msg)
 /*
 ** Print AST structure recursively for debugging
 */
-void	dbg_print_ast(t_ast *ast, int depth)
+__attribute__((unused)) static void	dbg_print_ast(t_ast *ast, int depth)
 {
 	int	i;
 
@@ -61,7 +74,7 @@ void	dbg_print_ast(t_ast *ast, int depth)
 /*
 ** Print command execution trace
 */
-void	dbg_trace_cmd(char *location, char *cmd_name)
+__attribute__((unused)) static void	dbg_trace_cmd(char *location, char *cmd_name)
 {
 	if (!g_dbg_enabled)
 		return ;
@@ -71,7 +84,7 @@ void	dbg_trace_cmd(char *location, char *cmd_name)
 /*
 ** Print pipe context state
 */
-void	dbg_trace_pipe(char *location, int index, int total)
+__attribute__((unused)) static void	dbg_trace_pipe(char *location, int index, int total)
 {
 	if (!g_dbg_enabled)
 		return ;
@@ -81,21 +94,19 @@ void	dbg_trace_pipe(char *location, int index, int total)
 /*
 ** Print file descriptor state
 */
-void	dbg_trace_fds(char *location, int fd[3][2])
+__attribute__((unused)) static void	dbg_trace_fds(char *location, int fd[3][2])
 {
 	if (!g_dbg_enabled)
 		return ;
 	ft_fprintf(2, "[DBG] %s: FDs - NEXT[%d,%d] LAST[%d,%d] IOFD[%d,%d]\n",
-		location,
-		fd[NEXT][READ], fd[NEXT][WRITE],
-		fd[LAST][READ], fd[LAST][WRITE],
-		fd[IOFD][READ], fd[IOFD][WRITE]);
+		location, fd[NEXT][READ], fd[NEXT][WRITE], fd[LAST][READ],
+		fd[LAST][WRITE], fd[IOFD][READ], fd[IOFD][WRITE]);
 }
 
 /*
 ** Print child process role
 */
-void	dbg_trace_child(char *role, char *cmd_name)
+__attribute__((unused)) static void	dbg_trace_child(char *role, char *cmd_name)
 {
 	if (!g_dbg_enabled)
 		return ;
@@ -105,7 +116,7 @@ void	dbg_trace_child(char *role, char *cmd_name)
 /*
 ** Print PATH lookup attempt
 */
-void	dbg_trace_path(char *prog, char *path)
+__attribute__((unused)) static void	dbg_trace_path(char *prog, char *path)
 {
 	if (!g_dbg_enabled)
 		return ;
@@ -118,7 +129,7 @@ void	dbg_trace_path(char *prog, char *path)
 /*
 ** Print environment operation
 */
-void	dbg_trace_env(char *operation, char *key)
+__attribute__((unused)) static void	dbg_trace_env(char *operation, char *key)
 {
 	if (!g_dbg_enabled)
 		return ;
@@ -128,7 +139,7 @@ void	dbg_trace_env(char *operation, char *key)
 /*
 ** Toggle debug output on/off
 */
-void	dbg_toggle(void)
+__attribute__((unused)) static void	dbg_toggle(void)
 {
 	g_dbg_enabled = !g_dbg_enabled;
 	if (g_dbg_enabled)
@@ -140,7 +151,7 @@ void	dbg_toggle(void)
 /*
 ** Enable debug output
 */
-void	dbg_enable(void)
+__attribute__((unused)) static void	dbg_enable(void)
 {
 	g_dbg_enabled = 1;
 }
@@ -148,7 +159,7 @@ void	dbg_enable(void)
 /*
 ** Disable debug output
 */
-void	dbg_disable(void)
+__attribute__((unused)) static void	dbg_disable(void)
 {
 	g_dbg_enabled = 0;
 }

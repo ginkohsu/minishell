@@ -27,7 +27,6 @@ static int	is_valid_identifier(char *str)
 	return (1);
 }
 
-
 int	ft_env(char **av)
 {
 	char	**array;
@@ -62,14 +61,14 @@ int	ft_export(char **av)
 		if (is_valid_identifier(av[i]))
 			addenv(av[i]);
 		else
-			ft_fprintf(2, "export: '%s': not a valid identifier", av[i]);	
+			ft_fprintf(2, "export: '%s': not a valid identifier", av[i]);
 	}
 	return (0);
 }
 
 int	ft_unset(char **av)
 {
-	int		i;
+	int	i;
 
 	i = 0;
 	while (av[++i])
@@ -77,7 +76,7 @@ int	ft_unset(char **av)
 		if (is_valid_identifier(av[i]))
 			rmenv(av[i]);
 		else
-			ft_fprintf(2, "unset: '%s': not a valid identifier", av[i]);	
+			ft_fprintf(2, "unset: '%s': not a valid identifier", av[i]);
 	}
 	return (0);
 }

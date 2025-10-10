@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   test_main.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aloimusa <aloimusa@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/10 01:22:30 by aloimusa          #+#    #+#             */
+/*   Updated: 2025/10/10 01:22:31 by aloimusa         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ast.h"
 
 int	main(void)
@@ -5,7 +17,7 @@ int	main(void)
 	t_ast	*ast;
 
 	printf("=== Minishell Executor Complete Test ===\n");
-	printf("Test case: echo "hello" | cat > output.txt\n");
+	printf("Test case: echo " hello " | cat > output.txt\n");
 	printf("This tests:\n");
 	printf("1. Builtin command execution (echo)\n");
 	printf("2. External command execution (cat, requires PATH lookup)\n");

@@ -47,16 +47,16 @@ int	count_array(char **array)
 	return (i);
 }
 
-static void open_fail(char *file)
+static void	open_fail(char *file)
 {
 	if (errno == EPERM || errno == EACCES)
-		ft_error("%s: permission denied\n", file, P_OBJ, 1);
+		ft_error("%s: permission denied", file, P_OBJ, 1);
 	else if (errno == ENOSPC)
-		ft_error("%s: no space left on device\n", file, P_OBJ, 0);
+		ft_error("%s: no space left on device", file, P_OBJ, 0);
 	else if (errno == ENOENT)
-		ft_error("%s: no such file\n", file, P_OBJ, 126);
+		ft_error("%s: no such file", file, P_OBJ, 126);
 	else if (errno == EISDIR)
-		ft_error("%s: is a directory\n", file, P_OBJ, 126);
+		ft_error("%s: is a directory", file, P_OBJ, 126);
 	else
 		ft_error("%s: undefined error opening file", file, P_OBJ, 1);
 }

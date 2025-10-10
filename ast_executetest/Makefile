@@ -12,14 +12,14 @@ LIBFT		:= $(LIBFT_DIR)/libft.a
 INC			:= -I. -I$(LIBFT_DIR)/include
 
 # Core source files (shared)
-CORE_SRCS	:= execution.c \
+CORE_SRCS	:= exec_ast.c \
 			   children.c \
-			   command_exec.c \
+			   exec_cmd.c \
 			   builtins.c \
-			   builtins2.c \
+			   builtins_more.c \
 			   environment.c \
-			   exec_tools.c \
-			   redirs.c \
+			   exec_utils.c \
+			   redirection.c \
 			   debug.c
 
 # Full test (original with redirections)

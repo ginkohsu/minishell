@@ -11,12 +11,13 @@
 /* ************************************************************************** */
 
 #include "execution.h"
+
+static char	*get_path(char **prog);
 static char	*get_path2(char **prog, char *ptr);
 
 void	execute_command(t_command *cmd)
 {
 	char	*path;
-	char	**env;
 
 	if (is_builtin(cmd->argv[0]))
 	{
@@ -37,13 +38,12 @@ void	execute_command(t_command *cmd)
 	}
 	path = get_path(cmd->argv);
 	if (!path)
-		ft_error("command not found: %s\ncommand_exec.c:40\n", cmd->argv[0], P_OBJ | F_AST, 127);
-	env = fetchenv(NULL);
-	if (execve(path, cmd->argv, env) == -1)
-		ft_error("execve failed\ncommand_exec.c:43\n", NULL, F_AST | STRERROR, 1);
+		ft_error("%s: command not found", cmd->argv[0], P_OBJ | F_AST, 127);
+	if (execve(path, cmd->argv, fetchenv(NULL)) == -1)
+		ft_error("execve", path, F_OBJ | F_AST | STRERROR, 1);
 }
 
-char	*get_path(char **prog)
+static char	*get_path(char **prog)
 {
 	char	*ptr;
 	char	**env;
@@ -60,13 +60,14 @@ char	*get_path(char **prog)
 		ptr = ft_strdup(prog[0]);
 		free_array(prog);
 		if (!ptr)
-			ft_error("malloc failed\ncommand_exec.c:59\n", NULL, F_AST, 2);
+			ft_error("malloc", NULL, F_AST | STRERROR, 2);
 		if (errno == ENOENT)
-			ft_error("%s: no such executable\ncommand_exec.c:61\n", ptr, F_OBJ | F_AST, 127);
+			ft_error("%s: no such file or directory", ptr,
+				P_OBJ | F_OBJ | F_AST, 127);
 		else if (errno == EPERM || errno == EACCES)
-			ft_error("%s: no executable permissions\ncommand_exec.c:63\n", ptr, F_OBJ | F_AST, 126);
+			ft_error("%s: permission denied", ptr, P_OBJ | F_OBJ | F_AST, 126);
 		else
-			ft_error("%s: not executable\ncommand_exec.c:65\n", ptr, F_OBJ | F_AST, 126);
+			ft_error("%s: not executable", ptr, P_OBJ | F_OBJ | F_AST, 126);
 	}
 	return (get_path2(prog, ptr));
 }
@@ -78,7 +79,7 @@ static char	*get_path2(char **prog, char *ptr)
 
 	array = ft_split(ptr + 5, ':');
 	if (!array)
-		ft_error("malloc failed\ncommand_exec.c:77\n", NULL, F_AST, 2);
+		ft_error("malloc", NULL, F_AST | STRERROR, 2);
 	i = -1;
 	while (array[++i])
 	{
@@ -91,20 +92,21 @@ static char	*get_path2(char **prog, char *ptr)
 	free_array(array);
 	return (ptr);
 }
-void	execute_parent_builtin(t_command *cmd)
+int	execute_parent_builtin(t_command *cmd)
 {
 	if (ft_strcmp("echo", cmd->argv[0]) == 0)
-		ft_echo(cmd->argv);
+		return (ft_echo(cmd->argv));
 	else if (ft_strcmp("cd", cmd->argv[0]) == 0)
-		ft_cd(cmd->argv);
+		return (ft_cd(cmd->argv));
 	else if (ft_strcmp("pwd", cmd->argv[0]) == 0)
-		ft_pwd(cmd->argv);
+		return (ft_pwd(cmd->argv));
 	else if (ft_strcmp("export", cmd->argv[0]) == 0)
-		ft_export(cmd->argv);
+		return (ft_export(cmd->argv));
 	else if (ft_strcmp("unset", cmd->argv[0]) == 0)
-		ft_unset(cmd->argv);
+		return (ft_unset(cmd->argv));
 	else if (ft_strcmp("env", cmd->argv[0]) == 0)
-		ft_env(cmd->argv);
+		return (ft_env(cmd->argv));
 	else if (ft_strcmp("exit", cmd->argv[0]) == 0)
-		ft_exit(cmd->argv);
+		return (ft_exit(cmd->argv));
+	return (0);
 }

@@ -25,7 +25,7 @@ void	first_child(t_command *cmd, int fd[3][2])
 	{
 		close(fd[NEXT][READ]);
 		close(fd[NEXT][WRITE]);
-		ft_error("dup2 failed\nchildren.c:27\n", NULL, F_AST, 1);
+		ft_error("dup2", NULL, F_AST | STRERROR, 1);
 	}
 	close(fd[NEXT][WRITE]);
 	close(fd[NEXT][READ]);
@@ -37,7 +37,7 @@ void	last_child(t_command *cmd, int fd[3][2])
 {
 	close(fd[LAST][WRITE]);
 	if (dup2(fd[LAST][READ], STDIN_FILENO) == -1)
-		ft_error("dup2 failed\nchildren.c:40\n", NULL, F_AST, 1);
+		ft_error("dup2", NULL, F_AST | STRERROR, 1);
 	close(fd[LAST][READ]);
 	close(fd[NEXT][READ]);
 	close(fd[NEXT][WRITE]);
@@ -49,11 +49,11 @@ void	middle_child(t_command *cmd, int fd[3][2])
 {
 	close(fd[LAST][WRITE]);
 	if (dup2(fd[LAST][READ], STDIN_FILENO) == -1)
-		ft_error("dup2 failed\nchildren.c:51\n", NULL, F_AST, 1);
+		ft_error("dup2", NULL, F_AST | STRERROR, 1);
 	close(fd[LAST][READ]);
 	close(fd[NEXT][READ]);
 	if (dup2(fd[NEXT][WRITE], STDOUT_FILENO) == -1)
-		ft_error("dup2 failed\nchildren.c:55\n", NULL, F_AST, 1);
+		ft_error("dup2", NULL, F_AST | STRERROR, 1);
 	close(fd[NEXT][WRITE]);
 	setup_redirections(cmd->redirs);
 	execute_command(cmd);
