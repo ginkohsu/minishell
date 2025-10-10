@@ -14,7 +14,7 @@ LEGEND:
 
 [PUBLIC] execute_ast()                    ← Called from: test files
    │
-   ├─→ [HIDDEN] recursive_count()         (counts commands in AST)
+   ├─→ [PUBLIC] recursive_count()         (counts commands in AST)
    │
    ├─→ [HIDDEN] recursive_exec()          (traverses AST recursively)
    │    │

@@ -63,22 +63,22 @@ enum	e_error_action
 	OPEN_FAIL = 1 << 9
 };
 
-/* Main execution entry point */
+// execution entry
 void		execute_ast(t_ast *ast);
 void		free_ast_root(void);
 
-/* Child process handlers */
+// child process type splitting
 void		only_child(t_command *cmd, int fd[3][2]);
 void		first_child(t_command *cmd, int fd[3][2]);
 void		last_child(t_command *cmd, int fd[3][2]);
 void		middle_child(t_command *cmd, int fd[3][2]);
 
-/* Builtin detection and execution */
+// non-builtin && builtin cmd execution
 int			is_builtin(char *name);
 int			execute_parent_builtin(t_command *cmd);
 void		execute_command(t_command *cmd);
 
-/* Individual builtin implementations */
+// builtin functions
 int			ft_cd(char **av);
 int			ft_exit(char **av);
 int			ft_echo(char **av);
@@ -87,17 +87,17 @@ int			ft_unset(char **av);
 int			ft_env(char **av);
 int			ft_pwd(char **av);
 
-/* Redirection handling */
+// redirs
 void		setup_redirections(t_redir *redirs);
 
-/* Environment management */
+// env table management
 void		initenv(char **src_env);
 char		**fetchenv(char *key);
 void		addenv(char *entry);
 void		rmenv(char *key);
 char		**get_sorted_env(void);
 
-/* Utility functions */
+// utils
 void		free_array(char **array);
 int			count_array(char **array);
 int			count_ast_commands(t_ast *ast);
