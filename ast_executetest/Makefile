@@ -20,7 +20,7 @@ CORE_SRCS	:= exec_ast.c \
 			   environment.c \
 			   exec_utils.c \
 			   redirection.c \
-			   debug.c
+			   .debug.c
 
 # Full test (original with redirections)
 FULL_SRCS	:= test_main.c \

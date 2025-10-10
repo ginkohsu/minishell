@@ -16,14 +16,16 @@
 # include "ast.h"
 # include <errno.h>
 # include <fcntl.h>
+# include <unistd.h>
 # include <stdbool.h>
 # include <stdio.h>
+# include <stdint.h>
 # include <string.h>
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <unistd.h>
 
-/* Pipe context for multi-command execution */
+// pipex_bonus style multi-process file descriptor handling
 typedef struct s_pipe_ctx
 {
 	int		*pid;
@@ -31,14 +33,14 @@ typedef struct s_pipe_ctx
 	int		index;
 }			t_pipe_ctx;
 
-/* Environment table structure */
+// env table
 typedef struct s_table
 {
 	size_t	count;
 	char	**env;
 }			t_table;
 
-/* Pipe/FD index defines */
+// pipe_ctx fd[][] defines
 # define NEXT 0
 # define LAST 1
 # define IOFD 2
@@ -47,21 +49,19 @@ typedef struct s_table
 # define INFILE 0
 # define OUTFILE 1
 
-/* ft_error action flags (can be combined with |) */
-# define STAY (1 << 0) /* Don't exit, just return */
-# define P_OBJ (1 << 1) /* Print obj in message */
-# define F_OBJ (1 << 2) /* Free obj */
-# define F_MSG (1 << 3) /* Free msg string */
-# define P_ARRAY (1 << 4) /* Print array (unused) */
-# define F_ARRAY (1 << 5) /* Free string array */
-# define F_ARENA (1 << 6) /* Free arena allocator */
-# define STRERROR (1 << 7) /* Print errno string */
-# define V_OBJ (1 << 8) /* Verbose obj (unused) */
-# define F_AST (1 << 9) /* Free AST tree */
-# define OPEN_FAIL (1 << 10) /* Free AST tree */
-
-/* Environment flags */
-# define SORTED 1
+// ft_error action flags (bitwise flags for ft_error)
+enum	e_error_action
+{
+	STAY = 1 << 0,
+	P_OBJ = 1 << 1,
+	F_OBJ = 1 << 2,
+	F_MSG = 1 << 3,
+	F_ARRAY = 1 << 4,
+	F_ARENA = 1 << 5,
+	F_AST = 1 << 6,
+	STRERROR = 1 << 7,
+	OPEN_FAIL = 1 << 9
+};
 
 /* Main execution entry point */
 void		execute_ast(t_ast *ast);
@@ -100,12 +100,7 @@ char		**get_sorted_env(void);
 /* Utility functions */
 void		free_array(char **array);
 int			count_array(char **array);
+int			count_ast_commands(t_ast *ast);
 void		ft_error(char *msg, void *obj, int action, unsigned char code);
-
-/*
-** Debug utilities available in debug.c (all static)
-** To enable: remove 'static' in debug.c and add prototypes here
-** Includes: dbg_print, dbg_print_ast, dbg_trace_*, dbg_toggle/enable/disable
-*/
 
 #endif

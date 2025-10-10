@@ -1,4 +1,4 @@
-/* ************************************************************************* */
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   ast.h                                              :+:      :+:    :+:   */
@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 11:15:02 by jinxu             #+#    #+#             */
-/*   Updated: 2025/09/30 13:41:20 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/10/10 11:13:49 by aloimusa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,12 @@ typedef struct s_ast
 		{
 			struct s_ast	*left;
 			struct s_ast	*right;
-		} pipe;
+		} s_pipe;
 	};
 }							t_ast;
 
 t_ast						*create_test_ast(void);
-void	execute_ast(t_ast *ast); // Amit's execute part?
+void						execute_ast(t_ast *ast); // Amit's execute part!
 void						free_ast(t_ast *ast);
 
 #endif

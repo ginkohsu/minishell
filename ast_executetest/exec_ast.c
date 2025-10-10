@@ -14,7 +14,6 @@
 
 static t_ast	*g_ast_root = NULL;
 
-static int		recursive_count(t_ast *ast);
 static void		recursive_exec(t_ast *ast, t_pipe_ctx *ctx, int total);
 static void		cycle_pipes(t_pipe_ctx *ctx, int total);
 static void		wait_for_children(int *pid, int total);
@@ -26,14 +25,14 @@ void	execute_ast(t_ast *ast)
 
 	if (!ast || (ast->type == CMD && (!ast->cmd.argv || !ast->cmd.argv[0])))
 		return ;
-	free_ast_root();
 	if (ast->type == CMD && is_builtin(ast->cmd.argv[0]) && !ast->cmd.redirs)
 	{
 		addenv(ft_strprep("?=", ft_itoa(execute_parent_builtin(&ast->cmd))));
 		return ;
 	}
+	free_ast_root();
 	g_ast_root = ast;
-	total = recursive_count(ast);
+	total = count_ast_commands(ast);
 	ctx.pid = malloc(total * sizeof(int));
 	if (!ctx.pid)
 		return ;
@@ -47,12 +46,16 @@ void	execute_ast(t_ast *ast)
 	wait_for_children(ctx.pid, total);
 }
 
+void	free_ast_root(void)
+{
+	free_ast(g_ast_root);
+}
+
 static void	wait_for_children(int *pid, int total)
 {
 	int		i;
 	int		status;
 	int		last_status;
-	char	*entry;
 
 	i = -1;
 	while (++i < total - 1)
@@ -66,22 +69,7 @@ static void	wait_for_children(int *pid, int total)
 		status = 128 + WTERMSIG(last_status);
 	else
 		status = 1;
-	entry = ft_strprep("?=", ft_itoa(status));
-	addenv(entry);
-}
-
-void	free_ast_root(void)
-{
-	free_ast(g_ast_root);
-}
-
-static int	recursive_count(t_ast *ast)
-{
-	if (!ast)
-		return (0);
-	if (ast->type == CMD)
-		return (1);
-	return (recursive_count(ast->pipe.left) + recursive_count(ast->pipe.right));
+	addenv(ft_strprep("?=", ft_itoa(status)));
 }
 
 static void	recursive_exec(t_ast *ast, t_pipe_ctx *ctx, int total)
@@ -108,8 +96,8 @@ static void	recursive_exec(t_ast *ast, t_pipe_ctx *ctx, int total)
 	}
 	else if (ast->type == PIPE)
 	{
-		recursive_exec(ast->pipe.left, ctx, total);
-		recursive_exec(ast->pipe.right, ctx, total);
+		recursive_exec(ast->s_pipe.left, ctx, total);
+		recursive_exec(ast->s_pipe.right, ctx, total);
 	}
 }
 

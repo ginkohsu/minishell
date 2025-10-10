@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "execution.h"
-#include <stdint.h>
 
 static t_table	*g_table = NULL;
 
@@ -122,29 +121,29 @@ void	rmenv(char *key)
 
 char	**get_sorted_env(void)
 {
-	char	**sorted;
+	char	**srtd;
 	size_t	i;
 	size_t	j;
 
-	sorted = malloc((g_table->count + 1) * sizeof(char *));
-	if (!sorted)
+	srtd = malloc((g_table->count + 1) * sizeof(char *));
+	if (!srtd)
 		return (NULL);
 	i = -1;
 	while (++i <= g_table->count)
-		sorted[i] = g_table->env[i];
+		srtd[i] = g_table->env[i];
 	i = -1;
 	while (++i < g_table->count - 1)
 	{
 		j = i;
 		while (++j < g_table->count)
 		{
-			if (ft_strcmp(sorted[i], sorted[j]) > 0)
+			if (ft_strcmp(srtd[i], srtd[j]) > 0)
 			{
-				sorted[i] = (char *)((uintptr_t)sorted[i] ^ (uintptr_t)sorted[j]);
-				sorted[j] = (char *)((uintptr_t)sorted[i] ^ (uintptr_t)sorted[j]);
-				sorted[i] = (char *)((uintptr_t)sorted[i] ^ (uintptr_t)sorted[j]);
+				srtd[i] = (char *)((uintptr_t)srtd[i] ^ (uintptr_t)srtd[j]);
+				srtd[j] = (char *)((uintptr_t)srtd[i] ^ (uintptr_t)srtd[j]);
+				srtd[i] = (char *)((uintptr_t)srtd[i] ^ (uintptr_t)srtd[j]);
 			}
 		}
 	}
-	return (sorted);
+	return (srtd);
 }

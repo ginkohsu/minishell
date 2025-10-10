@@ -39,8 +39,8 @@ static t_ast	*create_simple_pipe_test(void)
 	left->cmd.redirs = NULL;
 	pipe_ast = malloc(sizeof(t_ast));
 	pipe_ast->type = PIPE;
-	pipe_ast->pipe.left = left;
-	pipe_ast->pipe.right = right;
+	pipe_ast->s_pipe.left = left;
+	pipe_ast->s_pipe.right = right;
 	return (pipe_ast);
 }
 

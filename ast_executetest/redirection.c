@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "execution.h"
-#include <fcntl.h>
-#include <unistd.h>
 
 static void	redirect(char *file, int oflag, int perms, int io)
 {

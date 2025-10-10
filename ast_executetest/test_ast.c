@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ast.h"
+#include "execution.h"
 
 /*
 ** Complex test case with builtin and external commands
@@ -42,9 +43,20 @@ t_ast	*create_test_ast(void)
 	left->cmd.redirs = NULL;
 	pipe_ast = malloc(sizeof(t_ast));
 	pipe_ast->type = PIPE;
-	pipe_ast->pipe.left = left;
-	pipe_ast->pipe.right = right;
+	pipe_ast->s_pipe.left = left;
+	pipe_ast->s_pipe.right = right;
 	return (pipe_ast);
+}
+
+// recursive ast command counter
+int	count_ast_commands(t_ast *ast)
+{
+	if (!ast)
+		return (0);
+	if (ast->type == CMD)
+		return (1);
+	return (count_ast_commands(ast->s_pipe.left)
+		+ count_ast_commands(ast->s_pipe.right));
 }
 
 void	free_ast(t_ast *ast)
@@ -78,8 +90,8 @@ void	free_ast(t_ast *ast)
 	}
 	else
 	{
-		free_ast(ast->pipe.left);
-		free_ast(ast->pipe.right);
+		free_ast(ast->s_pipe.left);
+		free_ast(ast->s_pipe.right);
 	}
 	free(ast);
 }

@@ -92,6 +92,7 @@ static char	*get_path2(char **prog, char *ptr)
 	free_array(array);
 	return (ptr);
 }
+
 int	execute_parent_builtin(t_command *cmd)
 {
 	if (ft_strcmp("echo", cmd->argv[0]) == 0)
