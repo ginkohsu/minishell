@@ -12,6 +12,7 @@
 
 #include "execution.h"
 
+// change directory builtin
 int	ft_cd(char **av)
 {
 	char	**env;
@@ -39,6 +40,7 @@ int	ft_cd(char **av)
 	return (0);
 }
 
+// exit shell with status code
 int	ft_exit(char **av)
 {
 	int	i;
@@ -63,6 +65,7 @@ int	ft_exit(char **av)
 	exit((unsigned char)ft_atoi(av[1]));
 }
 
+// print arguments to stdout
 int	ft_echo(char **av)
 {
 	int		i;
@@ -86,6 +89,7 @@ int	ft_echo(char **av)
 	return (0);
 }
 
+// print working directory
 int	ft_pwd(char **av)
 {
 	char	**array;

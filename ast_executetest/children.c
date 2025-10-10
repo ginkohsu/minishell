@@ -12,6 +12,7 @@
 
 #include "execution.h"
 
+// execute single command without pipes
 void	only_child(t_command *cmd, int fd[3][2])
 {
 	(void)fd;
@@ -19,6 +20,7 @@ void	only_child(t_command *cmd, int fd[3][2])
 	execute_command(cmd);
 }
 
+// execute first command in pipeline
 void	first_child(t_command *cmd, int fd[3][2])
 {
 	if (dup2(fd[NEXT][WRITE], STDOUT_FILENO) == -1)
@@ -33,6 +35,7 @@ void	first_child(t_command *cmd, int fd[3][2])
 	execute_command(cmd);
 }
 
+// execute last command in pipeline
 void	last_child(t_command *cmd, int fd[3][2])
 {
 	close(fd[LAST][WRITE]);
@@ -45,6 +48,7 @@ void	last_child(t_command *cmd, int fd[3][2])
 	execute_command(cmd);
 }
 
+// execute middle command in pipeline
 void	middle_child(t_command *cmd, int fd[3][2])
 {
 	close(fd[LAST][WRITE]);

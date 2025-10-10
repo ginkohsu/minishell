@@ -12,6 +12,7 @@
 
 #include "execution.h"
 
+// check if string is valid env variable name
 static int	is_valid_identifier(char *str)
 {
 	int	i;
@@ -27,6 +28,7 @@ static int	is_valid_identifier(char *str)
 	return (1);
 }
 
+// print environment variables
 int	ft_env(char **av)
 {
 	char	**array;
@@ -42,6 +44,7 @@ int	ft_env(char **av)
 	return (0);
 }
 
+// export variables to environment
 int	ft_export(char **av)
 {
 	int		i;
@@ -66,6 +69,7 @@ int	ft_export(char **av)
 	return (0);
 }
 
+// remove variables from environment
 int	ft_unset(char **av)
 {
 	int	i;

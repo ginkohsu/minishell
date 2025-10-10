@@ -12,6 +12,7 @@
 
 #include "execution.h"
 
+// open file and dup to stdin/stdout
 static void	redirect(char *file, int oflag, int perms, int io)
 {
 	int	fd;
@@ -28,6 +29,7 @@ static void	redirect(char *file, int oflag, int perms, int io)
 	fd = -1;
 }
 
+// read heredoc input until delimiter
 static bool	heredoc(char *delimiter)
 {
 	int		tmp;
@@ -53,6 +55,7 @@ static bool	heredoc(char *delimiter)
 	return (true);
 }
 
+// apply all redirections in linked list
 void	setup_redirections(t_redir *redirs)
 {
 	while (redirs)

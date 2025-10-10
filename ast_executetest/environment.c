@@ -14,6 +14,7 @@
 
 static t_table	*g_table = NULL;
 
+// get env variable by key, null returns full array
 char	**fetchenv(char *key)
 {
 	int		i;
@@ -32,6 +33,7 @@ char	**fetchenv(char *key)
 	return (NULL);
 }
 
+// initialize environment from array
 void	initenv(char **src_env)
 {
 	size_t	word;
@@ -61,6 +63,7 @@ void	initenv(char **src_env)
 	g_table->count = word;
 }
 
+// add or update environment variable
 void	addenv(char *entry)
 {
 	size_t	len;
@@ -90,6 +93,7 @@ void	addenv(char *entry)
 	free_array(new_env);
 }
 
+// remove environment variable by key
 void	rmenv(char *key)
 {
 	size_t	len;
@@ -119,6 +123,7 @@ void	rmenv(char *key)
 	free_array(new_env);
 }
 
+// return sorted copy of environment
 char	**get_sorted_env(void)
 {
 	char	**srtd;

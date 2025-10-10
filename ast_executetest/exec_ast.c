@@ -18,6 +18,7 @@ static void		recursive_exec(t_ast *ast, t_pipe_ctx *ctx, int total);
 static void		cycle_pipes(t_pipe_ctx *ctx, int total);
 static void		wait_for_children(int *pid, int total);
 
+// main entry point for ast execution
 void	execute_ast(t_ast *ast)
 {
 	t_pipe_ctx	ctx;
@@ -46,6 +47,7 @@ void	execute_ast(t_ast *ast)
 	wait_for_children(ctx.pid, total);
 }
 
+// free globally stored ast
 void	free_ast_root(void)
 {
 	free_ast(g_ast_root);

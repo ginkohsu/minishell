@@ -12,6 +12,7 @@
 
 #include "execution.h"
 
+// check if command is builtin
 int	is_builtin(char *name)
 {
 	if (!name)
@@ -22,6 +23,7 @@ int	is_builtin(char *name)
 		|| ft_strcmp(name, "exit") == 0);
 }
 
+// free null-terminated string array
 void	free_array(char **array)
 {
 	size_t	i;
@@ -37,6 +39,7 @@ void	free_array(char **array)
 	free(array);
 }
 
+// count elements in null-terminated array
 int	count_array(char **array)
 {
 	int	i;
@@ -61,6 +64,7 @@ static void	open_fail(char *file)
 		ft_error("%s: undefined error opening file", file, P_OBJ, 1);
 }
 
+// print error and exit with cleanup flags
 void	ft_error(char *msg, void *obj, int action, unsigned char code)
 {
 	if (msg && obj && (action & P_OBJ) && (action & STRERROR))

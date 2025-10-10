@@ -15,6 +15,7 @@
 static char	*get_path(char **prog);
 static char	*get_path2(char **prog, char *ptr);
 
+// execute command (builtin or external)
 void	execute_command(t_command *cmd)
 {
 	char	*path;
@@ -93,6 +94,7 @@ static char	*get_path2(char **prog, char *ptr)
 	return (ptr);
 }
 
+// execute builtin in parent process
 int	execute_parent_builtin(t_command *cmd)
 {
 	if (ft_strcmp("echo", cmd->argv[0]) == 0)
