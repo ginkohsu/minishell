@@ -60,7 +60,7 @@ enum	e_error_action
 	F_ARENA = 1 << 5,
 	F_AST = 1 << 6,
 	STRERROR = 1 << 7,
-	OPEN_FAIL = 1 << 9
+	OPEN_FAIL = 1 << 8
 };
 
 // execution entry
