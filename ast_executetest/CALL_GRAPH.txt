@@ -1,0 +1,168 @@
+================================================================================
+                        AST EXECUTION CALL GRAPH
+           Showing Public API (exported) vs Internal (static) Functions
+================================================================================
+
+LEGEND:
+  [PUBLIC]  = Function exported in header (must stay global)
+  [STATIC]  = Function made static (internalized)
+  [HIDDEN]  = Already static helper
+
+--------------------------------------------------------------------------------
+                            MAIN ENTRY POINT
+--------------------------------------------------------------------------------
+
+[PUBLIC] execute_ast()                    ← Called from: test files
+   │
+   ├─→ [HIDDEN] recursive_count()         (counts commands in AST)
+   │
+   ├─→ [HIDDEN] recursive_exec()          (traverses AST recursively)
+   │    │
+   │    ├─→ [HIDDEN] cycle_pipes()        (manages pipe FDs between commands)
+   │    │
+   │    ├─→ [PUBLIC] only_child()         ← exec_ast.c calls these
+   │    ├─→ [PUBLIC] first_child()          based on pipeline position
+   │    ├─→ [PUBLIC] middle_child()       
+   │    └─→ [PUBLIC] last_child()         
+   │         │
+   │         ├─→ [PUBLIC] setup_redirections()  ← children.c
+   │         │    │
+   │         │    ├─→ [HIDDEN] redirect()       (dup2 + close wrapper)
+   │         │    └─→ [HIDDEN] heredoc()        (heredoc processing)
+   │         │
+   │         └─→ [PUBLIC] execute_command()     ← children.c
+   │              │
+   │              ├─→ [PUBLIC] is_builtin()     ← Also: exec_ast.c
+   │              │
+   │              ├─→ [STATIC] get_path()       ✓ NOW STATIC!
+   │              │    └─→ [HIDDEN] get_path2()
+   │              │
+   │              └─→ [PUBLIC] ft_echo()        ← All 7 builtins
+   │                  [PUBLIC] ft_cd()            exported for
+   │                  [PUBLIC] ft_pwd()           exec_cmd.c dispatch
+   │                  [PUBLIC] ft_exit()
+   │                  [PUBLIC] ft_env()
+   │                  [PUBLIC] ft_export()
+   │                  [PUBLIC] ft_unset()
+   │
+   ├─→ [PUBLIC] execute_parent_builtin()  ← exec_ast.c (for no-pipe builtins)
+   │    └─→ (dispatches to same builtin functions above)
+   │
+   └─→ [HIDDEN] wait_for_children()       (waits for all child pids)
+        └─→ [PUBLIC] addenv()              (sets ?=<exit_status>)
+
+[PUBLIC] free_ast_root()                  ← Called from: builtins.c, exec_utils.c
+   └─→ [PUBLIC] free_ast()                  (recursively frees AST)
+
+--------------------------------------------------------------------------------
+                         ENVIRONMENT MANAGEMENT
+--------------------------------------------------------------------------------
+
+[PUBLIC] initenv()                        ← test_simple.c
+[PUBLIC] addenv()                         ← builtins.c, builtins_more.c, exec_ast.c
+[PUBLIC] rmenv()                          ← builtins.c, builtins_more.c
+[PUBLIC] fetchenv()                       ← builtins.c, builtins_more.c, exec_cmd.c
+[PUBLIC] get_sorted_env()                 ← builtins_more.c (for export)
+
+[HIDDEN] g_table                          (static global environment table)
+[HIDDEN] is_valid_identifier()           (builtins_more.c helper)
+
+--------------------------------------------------------------------------------
+                            UTILITY FUNCTIONS
+--------------------------------------------------------------------------------
+
+[PUBLIC] ft_error()                       ← UNIVERSAL - called from everywhere
+   └─→ [HIDDEN] open_fail()               (exec_utils.c - redirection errors)
+
+[PUBLIC] free_array()                     ← environment.c, exec_cmd.c
+[PUBLIC] count_array()                    ← environment.c
+[PUBLIC] is_builtin()                     ← exec_ast.c, exec_cmd.c
+
+--------------------------------------------------------------------------------
+                          DEBUG UTILITIES (ALL STATIC NOW!) ✓
+--------------------------------------------------------------------------------
+
+[STATIC] dbg_print()                      ✓ Made static - was unused
+[STATIC] dbg_print_ast()                  ✓ Made static - was unused
+[STATIC] dbg_trace_cmd()                  ✓ Made static - was unused
+[STATIC] dbg_trace_pipe()                 ✓ Made static - was unused
+[STATIC] dbg_trace_fds()                  ✓ Made static - was unused
+[STATIC] dbg_trace_child()                ✓ Made static - was unused
+[STATIC] dbg_trace_path()                 ✓ Made static - was unused
+[STATIC] dbg_trace_env()                  ✓ Made static - was unused
+[STATIC] dbg_toggle()                     ✓ Made static - was unused
+[STATIC] dbg_enable()                     ✓ Made static - was unused
+[STATIC] dbg_disable()                    ✓ Made static - was unused
+
+[HIDDEN] g_dbg_enabled                    (static global debug flag)
+
+--------------------------------------------------------------------------------
+                           SUMMARY BY FILE
+--------------------------------------------------------------------------------
+
+builtins.c:
+  PUBLIC:  ft_cd, ft_exit, ft_echo, ft_pwd
+
+builtins_more.c:
+  PUBLIC:  ft_env, ft_export, ft_unset
+  HIDDEN:  is_valid_identifier
+
+children.c:
+  PUBLIC:  only_child, first_child, last_child, middle_child
+
+debug.c:
+  STATIC:  ALL 11 debug functions ✓
+  HIDDEN:  g_dbg_enabled
+
+environment.c:
+  PUBLIC:  initenv, addenv, rmenv, fetchenv, get_sorted_env
+  HIDDEN:  g_table
+
+exec_ast.c:
+  PUBLIC:  execute_ast, free_ast_root
+  HIDDEN:  recursive_count, recursive_exec, cycle_pipes, wait_for_children
+  HIDDEN:  g_ast_root
+
+exec_cmd.c:
+  PUBLIC:  execute_command, execute_parent_builtin
+  STATIC:  get_path ✓
+  HIDDEN:  get_path2
+
+exec_utils.c:
+  PUBLIC:  is_builtin, free_array, count_array, ft_error
+  HIDDEN:  open_fail
+
+redirection.c:
+  PUBLIC:  setup_redirections
+  HIDDEN:  redirect, heredoc
+
+test_ast.c:
+  PUBLIC:  create_test_ast, free_ast (test utilities)
+  HIDDEN:  (various test AST builders)
+
+--------------------------------------------------------------------------------
+                        REFACTOR IMPACT SUMMARY
+--------------------------------------------------------------------------------
+
+Total Functions Analyzed:        ~45 functions
+Functions Made Static:           12 functions (11 debug + 1 path)
+Functions Already Static:        ~12 functions (helpers)
+Functions Kept Public:           ~21 functions (necessary API)
+
+Header Reduction:                21 lines (16%)
+Prototype Removals:              12 prototypes
+
+API Clarity:                     ✓ Significantly improved
+Encapsulation:                   ✓ Better separation of concerns
+Maintainability:                 ✓ Easier to refactor internals
+Code Smell:                      ✓ Professional and clean
+
+================================================================================
+                              END OF CALL GRAPH
+================================================================================
+
+Notes:
+- Test files (test_*.c) will be removed in production
+- All remaining PUBLIC functions are legitimately cross-file
+- No further static opportunities without restructuring files
+- Debug functions kept as scaffolding (easy to re-enable)
