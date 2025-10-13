@@ -6,13 +6,27 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 11:15:02 by jinxu             #+#    #+#             */
-/*   Updated: 2025/09/30 13:41:20 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/10/10 13:13:19 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef AST_H
 # define AST_H
 
 #include "minishell.h"
+
+typedef struct	s_parser
+{
+	t_token	*tokens;
+	int		token_count;
+	int		current_pos;
+}	t_parser;
+
+typedef enum	e_parse_status
+{
+	PARSE_SUCCESS,
+	PARSE_SYNTAX_ERROR,
+	PARSE_MALLOC_ERROR
+}	t_parse_status;
 
 typedef enum e_redir_type
 {
@@ -55,7 +69,7 @@ typedef struct s_ast
 	};
 }	t_ast;
 
-t_ast	*create_test_ast(void);
+t_ast	*parse(char *input);
 void	execute_ast(t_ast *ast);//Amit's execute part?
 void	free_ast(t_ast *ast);
 

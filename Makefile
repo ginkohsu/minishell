@@ -1,5 +1,5 @@
 NAME := minishell
-SRC := main.c arenalloc.c execution.c free.c handle_env.c handle_quote.c handle_redir.c handle_word.c lexer.c utils.c
+SRC := main.c free.c handle_env.c handle_quote.c handle_redir.c handle_word.c lexer.c utils.c
 SRC_DIR := src
 OBJ = $(addprefix $(OBJ_DIR)/,$(SRC:.c=.o))
 
