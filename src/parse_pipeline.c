@@ -1,43 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ast_utils.c                                        :+:      :+:    :+:   */
+/*   parse_pipeline.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/10 14:31:41 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/18 01:36:50 by jinxu            ###   ########.fr       */
+/*   Created: 2025/10/17 15:41:59 by jinxu             #+#    #+#             */
+/*   Updated: 2025/10/17 23:46:44 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ast.h"
 
-t_ast	*create_command_node(void)
+static t_ast	*handle_pipe_expression(t_parser *parser, t_ast *left)
 {
-	t_ast	*ast;
+	t_ast	*right;
 	
-	ast = malloc(sizeof(t_ast));
-	if (!ast)
+	parser_consume(parser);
+	right = parse_pipeline(parser);
+	if (!right)
 	{
-		perror("malloc failed in create_command_node");
+		free_ast(left);
 		return (NULL);
 	}
-	ast->type = CMD;
-	ast->cmd.argv = NULL;
-	ast->cmd.redirs = NULL;
-
-	return (ast);
+	return (create_pipe_node(left, right));
 }
 
-t_ast	*create_pipe_node(t_ast *left, t_ast *right)
+t_ast	*parse_pipeline(t_parser *parser)
 {
-	t_ast	*ast;
-
-	ast = malloc(sizeof(t_ast));
-	if (!ast)
+	t_ast	*left;
+	t_token	*token;
+	
+	left = parse_command(parser);
+	if (!left)
 		return (NULL);
-	ast->type = PIPE;
-	ast->pipe.left = left;
-	ast->pipe.right = right;
-	return (ast);
+	token = parser_peek(parser, 0);
+	if (token && token->type == TOKEN_PIPE)
+		return (handle_pipe_expression(parser, left));
+	return (left);
 }

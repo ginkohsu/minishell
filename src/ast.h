@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 11:15:02 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/17 23:55:44 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/10/18 01:10:11 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef AST_H
@@ -28,17 +28,9 @@ typedef enum	e_parse_status
 	PARSE_MALLOC_ERROR
 }	t_parse_status;
 
-typedef enum e_redir_type
-{
-	REDIR_IN,
-	REDIR_OUT,
-	REDIR_APPEND,
-	REDIR_HEREDOC
-}	t_redir_type;
-
 typedef struct s_redir
 {
-	t_redir_type	type;
+	t_token_type	type;
 	char			*filename;
 	struct s_redir	*next;
 }	t_redir;

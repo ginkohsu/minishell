@@ -6,13 +6,11 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 14:19:44 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/10 14:27:53 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/10/17 15:58:26 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ast.h"
-
-#include "parser.h"
 
 int	is_redirection_token(t_token *token)
 {
