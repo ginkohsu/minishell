@@ -25,12 +25,12 @@ void	first_child(t_command *cmd, int fd[3][2])
 {
 	if (dup2(fd[NEXT][WRITE], STDOUT_FILENO) == -1)
 	{
-		close(fd[NEXT][READ]);
-		close(fd[NEXT][WRITE]);
-		ft_error("dup2", NULL, F_AST | STRERROR, 1);
+		safe_close(&fd[NEXT][READ]);
+		safe_close(&fd[NEXT][WRITE]);
+		exittool(ERR_DUP2, NULL, F_AST | F_ENV | STRERR, 1);
 	}
-	close(fd[NEXT][WRITE]);
-	close(fd[NEXT][READ]);
+	safe_close(&fd[NEXT][WRITE]);
+	safe_close(&fd[NEXT][READ]);
 	setup_redirections(cmd->redirs);
 	execute_command(cmd);
 }
@@ -38,12 +38,13 @@ void	first_child(t_command *cmd, int fd[3][2])
 // execute last command in pipeline
 void	last_child(t_command *cmd, int fd[3][2])
 {
-	close(fd[LAST][WRITE]);
+	safe_close(&fd[LAST][WRITE]);
 	if (dup2(fd[LAST][READ], STDIN_FILENO) == -1)
-		ft_error("dup2", NULL, F_AST | STRERROR, 1);
-	close(fd[LAST][READ]);
-	close(fd[NEXT][READ]);
-	close(fd[NEXT][WRITE]);
+	{
+		safe_close(&fd[LAST][READ]);
+		exittool(ERR_DUP2, NULL, F_AST | F_ENV | STRERR, 1);
+	}
+	safe_close(&fd[LAST][READ]);
 	setup_redirections(cmd->redirs);
 	execute_command(cmd);
 }
@@ -51,14 +52,22 @@ void	last_child(t_command *cmd, int fd[3][2])
 // execute middle command in pipeline
 void	middle_child(t_command *cmd, int fd[3][2])
 {
-	close(fd[LAST][WRITE]);
+	safe_close(&fd[LAST][WRITE]);
 	if (dup2(fd[LAST][READ], STDIN_FILENO) == -1)
-		ft_error("dup2", NULL, F_AST | STRERROR, 1);
-	close(fd[LAST][READ]);
-	close(fd[NEXT][READ]);
+	{
+		safe_close(&fd[LAST][READ]);
+		safe_close(&fd[NEXT][READ]);
+		safe_close(&fd[NEXT][WRITE]);
+		exittool(ERR_DUP2, NULL, F_AST | F_ENV | STRERR, 1);
+	}
+	safe_close(&fd[LAST][READ]);
+	safe_close(&fd[NEXT][READ]);
 	if (dup2(fd[NEXT][WRITE], STDOUT_FILENO) == -1)
-		ft_error("dup2", NULL, F_AST | STRERROR, 1);
-	close(fd[NEXT][WRITE]);
+	{
+		safe_close(&fd[NEXT][WRITE]);
+		exittool(ERR_DUP2, NULL, F_AST | F_ENV | STRERR, 1);
+	}
+	safe_close(&fd[NEXT][WRITE]);
 	setup_redirections(cmd->redirs);
 	execute_command(cmd);
 }

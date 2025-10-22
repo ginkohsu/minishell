@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_tools.c                                       :+:      :+:    :+:   */
+/*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aloimusa <aloimusa@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/09 00:02:59 by aloimusa          #+#    #+#             */
-/*   Updated: 2025/10/09 00:33:31 by aloimusa         ###   ########.fr       */
+/*   Created: 2025/10/22 03:54:34 by aloimusa          #+#    #+#             */
+/*   Updated: 2025/10/22 03:54:35 by aloimusa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,66 +26,52 @@ int	is_builtin(char *name)
 // free null-terminated string array
 void	free_array(char **array)
 {
-	size_t	i;
+	int	i;
 
 	if (!array)
 		return ;
-	i = 0;
-	while (array[i])
-	{
-		free(array[i]);
-		i++;
-	}
-	free(array);
-}
-
-// count elements in null-terminated array
-int	count_array(char **array)
-{
-	int	i;
-
 	i = -1;
 	while (array[++i])
-		;
-	return (i);
+		free(array[i]);
+	free(array);
+	array = NULL;
 }
 
-static void	open_fail(char *file)
+// recursively free ast and its contents
+void	free_ast(t_ast *ast)
 {
-	if (errno == EPERM || errno == EACCES)
-		ft_error("%s: permission denied", file, P_OBJ, 1);
-	else if (errno == ENOSPC)
-		ft_error("%s: no space left on device", file, P_OBJ, 0);
-	else if (errno == ENOENT)
-		ft_error("%s: no such file", file, P_OBJ, 126);
-	else if (errno == EISDIR)
-		ft_error("%s: is a directory", file, P_OBJ, 126);
-	else
-		ft_error("%s: undefined error opening file", file, P_OBJ, 1);
-}
+	t_redir	*curr;
+	t_redir	*next;
 
-// print error and exit with cleanup flags
-void	ft_error(char *msg, void *obj, int action, unsigned char code)
-{
-	if (msg && obj && (action & P_OBJ) && (action & STRERROR))
-		ft_fprintf(2, msg, obj, strerror(errno));
-	else if (msg && (action & STRERROR))
-		ft_fprintf(2, msg, strerror(errno));
-	else if (msg && obj && (action & P_OBJ))
-		ft_fprintf(2, msg, obj);
-	else if (msg)
-		ft_fprintf(2, msg);
-	if (action & F_AST)
-		free_ast_root();
-	if (action & F_ARRAY)
-		free_array((char **)obj);
-	if (obj && (action & F_OBJ))
-		free(obj);
-	if (msg && (action & F_MSG))
-		free(msg);
-	if (action & STAY)
+	if (!ast)
 		return ;
-	if (action & OPEN_FAIL)
-		open_fail(obj);
-	exit(code);
+	if (ast->type == CMD)
+	{
+		if (ast->cmd.argv)
+			free_array(ast->cmd.argv);
+		curr = ast->cmd.redirs;
+		while (curr)
+		{
+			next = curr->next;
+			free(curr->filename);
+			free(curr);
+			curr = next;
+		}
+	}
+	else if (ast->type == PIPE)
+	{
+		free_ast(ast->s_pipe.left);
+		free_ast(ast->s_pipe.right);
+	}
+	free(ast);
+}
+
+// safely close a file descriptor (pass by reference)
+void	safe_close(int *fd)
+{
+	if (fd && *fd >= 0)
+	{
+		close(*fd);
+		*fd = -1;
+	}
 }

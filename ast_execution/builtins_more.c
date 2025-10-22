@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtins2.c                                        :+:      :+:    :+:   */
+/*   builtins_more.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aloimusa <aloimusa@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/09 18:57:14 by aloimusa          #+#    #+#             */
-/*   Updated: 2025/10/09 18:58:45 by aloimusa         ###   ########.fr       */
+/*   Created: 2025/10/22 03:54:10 by aloimusa          #+#    #+#             */
+/*   Updated: 2025/10/22 03:54:11 by aloimusa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
 
-// check if string is valid env variable name
+// check if string is valid env variable
 static int	is_valid_identifier(char *str)
 {
 	int	i;
@@ -22,14 +22,14 @@ static int	is_valid_identifier(char *str)
 	if (!ft_isalpha(str[0]) && str[0] != '_')
 		return (0);
 	i = 0;
-	while (str[++i])
+	while (str[++i] && str[i] != '=')
 		if (!ft_isalnum(str[i]) && str[i] != '_')
 			return (0);
 	return (1);
 }
 
 // print environment variables
-int	ft_env(char **av)
+int	ft_env(char **av, int f)
 {
 	char	**array;
 	int		i;
@@ -37,50 +37,53 @@ int	ft_env(char **av)
 	(void)av;
 	array = fetchenv(NULL);
 	if (!array)
-		return (1);
+		return (exittool(NULL, NULL, F_AST | F_ENV | f, 1));
 	i = -1;
 	while (array[++i])
-		write(1, array[i], ft_strlen(array[i]));
-	return (0);
+		if (write(1, array[i], ft_strlen(array[i])) != -1)
+			write(1, "\n", 1);
+	return (exittool(NULL, NULL, F_AST | F_ENV | f, 0));
 }
 
 // export variables to environment
-int	ft_export(char **av)
+int	ft_export(char **av, int f)
 {
 	int		i;
 	char	**array;
 
 	if (!av[1])
 	{
+		array = arrdup(fetchenv(NULL));
+		if (!array)
+			return (exittool(NULL, NULL, F_AST | F_ENV | f, 1));
+		arrsort(array);
 		i = -1;
-		array = get_sorted_env();
 		while (array[++i])
 			ft_printf("declare -x %s\n", array[i]);
-		return (0);
+		return (exittool(NULL, array, F_OBJ | F_AST | F_ENV | f, 0));
 	}
 	i = 0;
 	while (av[++i])
 	{
-		if (is_valid_identifier(av[i]))
-			addenv(av[i]);
-		else
-			ft_fprintf(2, "export: '%s': not a valid identifier", av[i]);
+		if (is_valid_identifier(av[i]) && addenv(av[i]) == -1)
+			return (exittool(ERR_ENV_CORRUPT, NULL, F_AST | F_ENV | f, 1));
+		else if (!is_valid_identifier(av[i]))
+			ft_fprintf(2, "minishell: export: `%s': not a valid identifier\n",
+				av[i]);
 	}
-	return (0);
+	return (exittool(NULL, NULL, F_AST | F_ENV | f, 0));
 }
 
 // remove variables from environment
-int	ft_unset(char **av)
+int	ft_unset(char **av, int f)
 {
 	int	i;
 
 	i = 0;
 	while (av[++i])
 	{
-		if (is_valid_identifier(av[i]))
-			rmenv(av[i]);
-		else
-			ft_fprintf(2, "unset: '%s': not a valid identifier", av[i]);
+		if (is_valid_identifier(av[i]) && rmenv(av[i]) == -1)
+			return (exittool(ERR_ENV_CORRUPT, NULL, F_AST | F_ENV | f, 1));
 	}
-	return (0);
+	return (exittool(NULL, NULL, F_AST | F_ENV | f, 0));
 }

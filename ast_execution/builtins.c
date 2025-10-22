@@ -12,92 +12,121 @@
 
 #include "execution.h"
 
-// change directory builtin
-int	ft_cd(char **av)
+static int	update_cwd(char *s, int f)
 {
 	char	**env;
-	char	*entry;
+	char	*tmp;
+
+	if (chdir(s) == -1)
+		return (exittool(ERR_CD_PATH, s, P_OBJ | STRERR | F_AST | F_ENV | f,
+				1));
+	env = fetchenv("PWD");
+	if (env)
+	{
+		tmp = ft_strprep("OLDPWD=", ft_strdup(ft_strchr(env[0], '=') + 1));
+		if (addenv(tmp) == -1)
+			return (exittool(ERR_ENV_CORRUPT, tmp, F_OBJ | F_AST | F_ENV | f,
+					1));
+		free(tmp);
+	}
+	s = getcwd(NULL, 0);
+	if (!s)
+		return (exittool(ERR_CD_CWD, NULL, STRERR | F_AST | F_ENV | f, 1));
+	tmp = ft_strprep("PWD=", s);
+	if (addenv(tmp) == -1)
+		return (exittool(ERR_ENV_CORRUPT, tmp, F_OBJ | F_AST | F_ENV | f, 1));
+	return (exittool(NULL, tmp, F_OBJ | F_AST | F_ENV | f, 0));
+}
+
+// change directory builtin
+int	ft_cd(char **av, int f)
+{
+	char	**env;
+	char	*path;
 
 	if (av[1] && av[2])
-		ft_error("cd: too many arguments", NULL, F_AST, 2);
+		return (exittool(ERR_CD_MANY_ARGS, NULL, F_AST | F_ENV | f, 2));
 	if (!av[1])
 	{
 		env = fetchenv("HOME");
 		if (!env)
-			ft_error("cd: HOME not set", NULL, F_AST, 1);
-		rmenv("PWD");
-		entry = ft_strjoin("PWD=", env[0]);
-		addenv(entry);
-		free(entry);
-		return (0);
+			return (exittool(ERR_CD_HOME_UNSET, NULL, F_AST | F_ENV | f, 1));
+		return (update_cwd(ft_strchr(env[0], '=') + 1, f));
 	}
-	if (chdir(av[1]) == -1)
-		ft_error("cd: %s", av[1], STRERROR | P_OBJ | F_AST, 1);
-	rmenv("PWD");
-	entry = ft_strjoin("PWD=", av[1]);
-	addenv(entry);
-	free(entry);
-	return (0);
+	else if (ft_strncmp(av[1], "-", 2) == 0)
+	{
+		env = fetchenv("OLDPWD");
+		if (!env)
+			return (exittool(ERR_CD_OLDPWD_UNSET, NULL, F_AST | F_ENV | f, 1));
+		path = ft_strchr(env[0], '=') + 1;
+		ft_printf("%s\n", path);
+		return (update_cwd(path, f));
+	}
+	else
+		return (update_cwd(av[1], f));
 }
 
 // exit shell with status code
-int	ft_exit(char **av)
+int	ft_exit(char **av, int f)
 {
 	int	i;
 
 	write(2, "exit\n", 5);
 	if (av[1] && av[2])
-	{
-		write(2, "exit: too many arguments\n", 25);
-		return (1);
-	}
+		return (exittool(ERR_EXIT_MANY_ARGS, NULL, F_AST | f, 1));
 	if (!av[1])
-	{
-		free_ast_root();
-		exit(0);
-	}
+		return (exittool(NULL, NULL, F_AST | F_ENV | TRUE_EXIT | f, 0));
 	i = 0;
 	while (av[1][++i])
 		if (!ft_isdigit(av[1][i - 1]))
-			ft_error("exit: %s: numeric argument required", av[1],
-				P_OBJ | F_AST, 2);
-	free_ast_root();
-	exit((unsigned char)ft_atoi(av[1]));
+			return (exittool(ERR_EXIT_NUMERIC, av[1],
+					P_OBJ | F_AST | F_ENV | TRUE_EXIT | f, 2));
+	i = ft_atoi(av[1]);
+	if (errno == ERANGE)
+		return (exittool(ERR_EXIT_OVERFLOW, av[1],
+				P_OBJ | F_AST | F_ENV | TRUE_EXIT | f, 2));
+	return (exittool(NULL, NULL, F_AST | F_ENV | TRUE_EXIT | f, i % 256));
 }
 
 // print arguments to stdout
-int	ft_echo(char **av)
+int	ft_echo(char **av, int f)
 {
 	int		i;
+	int		s;
 	bool	nl;
 
-	if (av[1] && ft_strcmp(av[1], "-n") == 0)
+	nl = true;
+	s = 0;
+	while (av[++s] && av[s][0] == '-')
 	{
-		nl = true;
-		i = 1;
-	}
-	else
-	{
-		nl = false;
 		i = 0;
+		while (av[s][++i] == 'n')
+			;
+		if (i > 1 && !av[s][i])
+			nl = false;
+		else
+			break ;
 	}
-	while (av[++i])
-		if (write(1, av[i], ft_strlen(av[i])) != -1 && av[i + 1])
+	while (av[s++])
+		if (write(1, av[s - 1], ft_strlen(av[s - 1])) != -1 && av[s])
 			write(1, " ", 1);
-	if (!nl)
+	if (nl)
 		write(1, "\n", 1);
-	return (0);
+	return (exittool(NULL, NULL, F_AST | F_ENV | f, 0));
 }
 
 // print working directory
-int	ft_pwd(char **av)
+int	ft_pwd(char **av, int f)
 {
 	char	**array;
+	char	*path;
 
 	(void)av;
 	array = fetchenv("PWD");
 	if (!array)
-		return (1);
-	write(1, array[0], ft_strlen(array[0]));
-	return (0);
+		return (exittool(NULL, NULL, F_AST | F_ENV | f, 1));
+	path = ft_strchr(array[0], '=') + 1;
+	write(1, path, ft_strlen(path));
+	write(1, "\n", 1);
+	return (exittool(NULL, NULL, F_AST | F_ENV | f, 0));
 }

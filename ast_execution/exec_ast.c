@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execution.c                                        :+:      :+:    :+:   */
+/*   exec_ast.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aloimusa <aloimusa@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/30 14:15:27 by aloimusa          #+#    #+#             */
-/*   Updated: 2025/09/30 14:15:30 by aloimusa         ###   ########.fr       */
+/*   Created: 2025/10/22 03:54:23 by aloimusa          #+#    #+#             */
+/*   Updated: 2025/10/22 03:54:25 by aloimusa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ static t_ast	*g_ast_root = NULL;
 
 static void		recursive_exec(t_ast *ast, t_pipe_ctx *ctx, int total);
 static void		cycle_pipes(t_pipe_ctx *ctx, int total);
-static void		wait_for_children(int *pid, int total);
 
 // main entry point for ast execution
 void	execute_ast(t_ast *ast)
@@ -28,7 +27,8 @@ void	execute_ast(t_ast *ast)
 		return ;
 	if (ast->type == CMD && is_builtin(ast->cmd.argv[0]) && !ast->cmd.redirs)
 	{
-		addenv(ft_strprep("?=", ft_itoa(execute_parent_builtin(&ast->cmd))));
+		if (addenv(ft_strprep("?=", ft_itoa(parent_builtin(&ast->cmd)))) == -1)
+			exittool(ERR_ENV_CORRUPT, NULL, 0, 1);
 		return ;
 	}
 	free_ast_root();
@@ -39,39 +39,27 @@ void	execute_ast(t_ast *ast)
 		return ;
 	ctx.index = 0;
 	recursive_exec(ast, &ctx, total);
-	if (total > 1)
-	{
-		close(ctx.fd[LAST][WRITE]);
-		close(ctx.fd[LAST][READ]);
-	}
 	wait_for_children(ctx.pid, total);
+	g_ast_root = NULL;
 }
 
 // free globally stored ast
 void	free_ast_root(void)
 {
-	free_ast(g_ast_root);
+	if (g_ast_root)
+		free_ast(g_ast_root);
+	g_ast_root = NULL;
 }
 
-static void	wait_for_children(int *pid, int total)
+// recursively count total commands in ast
+int	count_ast_commands(t_ast *ast)
 {
-	int		i;
-	int		status;
-	int		last_status;
-
-	i = -1;
-	while (++i < total - 1)
-		waitpid(pid[i], &status, 0);
-	last_status = 0;
-	waitpid(pid[total - 1], &last_status, 0);
-	free(pid);
-	if (WIFEXITED(last_status))
-		status = WEXITSTATUS(last_status);
-	else if (WIFSIGNALED(last_status))
-		status = 128 + WTERMSIG(last_status);
-	else
-		status = 1;
-	addenv(ft_strprep("?=", ft_itoa(status)));
+	if (!ast)
+		return (0);
+	if (ast->type == CMD)
+		return (1);
+	return (count_ast_commands(ast->s_pipe.left)
+		+ count_ast_commands(ast->s_pipe.right));
 }
 
 static void	recursive_exec(t_ast *ast, t_pipe_ctx *ctx, int total)
@@ -79,10 +67,10 @@ static void	recursive_exec(t_ast *ast, t_pipe_ctx *ctx, int total)
 	if (ast->type == CMD)
 	{
 		if (ctx->index < total - 1 && pipe(ctx->fd[NEXT]) == -1)
-			ft_error("pipe", ctx->pid, F_OBJ | F_AST | STRERROR, 1);
+			exittool(ERR_PIPE, ctx->pid, F_OBJ | F_AST | STRERR, 1);
 		ctx->pid[ctx->index] = fork();
 		if (ctx->pid[ctx->index] == -1)
-			ft_error("fork", ctx->pid, F_OBJ | F_AST | STRERROR, 1);
+			exittool(ERR_FORK, ctx->pid, F_OBJ | F_AST | STRERR, 1);
 		if (ctx->pid[ctx->index] == 0)
 		{
 			if (total == 1)
@@ -107,15 +95,13 @@ static void	cycle_pipes(t_pipe_ctx *ctx, int total)
 {
 	if (ctx->index > 0)
 	{
-		close(ctx->fd[LAST][WRITE]);
-		close(ctx->fd[LAST][READ]);
+		safe_close(&ctx->fd[LAST][WRITE]);
+		safe_close(&ctx->fd[LAST][READ]);
 	}
 	if (ctx->index < total - 1)
 	{
 		ctx->fd[LAST][WRITE] = ctx->fd[NEXT][WRITE];
 		ctx->fd[LAST][READ] = ctx->fd[NEXT][READ];
+		ctx->index++;
 	}
-	else
-		return ;
-	ctx->index++;
 }

@@ -1,75 +1,47 @@
-# Execution test Makefile
-# Switch between tests:
-#   make simple    - Build simple test (no redirections)
-#   make full      - Build full test (with redirections)
+# AST Execution - Test Suite
 
-NAME		:= ast_test
-NAME_SIMPLE	:= ast_simple
+NAME		:= test
 CC			:= cc
 CFLAGS		:= -Wall -Wextra -Werror -g
 LIBFT_DIR	:= ../libft
 LIBFT		:= $(LIBFT_DIR)/libft.a
 INC			:= -I. -I$(LIBFT_DIR)/include
 
-# Core source files (shared)
-CORE_SRCS	:= exec_ast.c \
+# Source files
+SRCS		:= tests/test.c \
+			   exec_ast.c \
 			   children.c \
 			   exec_cmd.c \
 			   builtins.c \
 			   builtins_more.c \
 			   environment.c \
 			   exec_utils.c \
+			   exittool.c \
 			   redirection.c \
-			   .debug.c
-
-# Full test (original with redirections)
-FULL_SRCS	:= test_main.c \
-			   test_ast.c \
-			   $(CORE_SRCS)
-
-# Simple test (no redirections)
-SIMPLE_SRCS	:= test_simple.c \
-			   test_ast.c \
-			   $(CORE_SRCS)
-
-SRCS		:= $(SIMPLE_SRCS)
+			   array_utils.c
 
 OBJS		:= $(SRCS:.c=.o)
-FULL_OBJS	:= $(FULL_SRCS:.c=.o)
-SIMPLE_OBJS	:= $(SIMPLE_SRCS:.c=.o)
 
-all: simple
-
-simple: SRCS = $(SIMPLE_SRCS)
-simple: NAME = $(NAME_SIMPLE)
-simple: $(NAME_SIMPLE)
-
-full: SRCS = $(FULL_SRCS)
-full: NAME = $(NAME)
-full: $(NAME)
+all: $(NAME)
 
 $(LIBFT):
 	$(MAKE) -C $(LIBFT_DIR)
 
-$(NAME): $(FULL_OBJS) $(LIBFT)
-	$(CC) $(CFLAGS) $(FULL_OBJS) -L$(LIBFT_DIR) -lft -o $(NAME)
+$(NAME): $(OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_DIR) -lft -o $(NAME)
 	@echo "✓ Built $(NAME) successfully"
-
-$(NAME_SIMPLE): $(SIMPLE_OBJS) $(LIBFT)
-	$(CC) $(CFLAGS) $(SIMPLE_OBJS) -L$(LIBFT_DIR) -lft -o $(NAME_SIMPLE)
-	@echo "✓ Built $(NAME_SIMPLE) successfully"
 
 %.o: %.c ast.h execution.h
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 clean:
-	rm -f $(FULL_OBJS) $(SIMPLE_OBJS)
+	rm -f $(OBJS)
 	$(MAKE) -C $(LIBFT_DIR) clean
 
 fclean: clean
-	rm -f $(NAME) $(NAME_SIMPLE)
+	rm -f $(NAME)
 	$(MAKE) -C $(LIBFT_DIR) fclean
 
 re: fclean all
 
-.PHONY: all simple full clean fclean re
+.PHONY: all clean fclean re

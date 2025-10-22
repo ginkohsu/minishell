@@ -17,8 +17,8 @@ static t_table	*g_table = NULL;
 // get env variable by key, null returns full array
 char	**fetchenv(char *key)
 {
-	int		i;
-	size_t	len;
+	int	i;
+	int	len;
 
 	if (!key)
 		return (g_table->env);
@@ -34,121 +34,76 @@ char	**fetchenv(char *key)
 }
 
 // initialize environment from array
-void	initenv(char **src_env)
+int	initenv(char **src_env)
 {
-	size_t	word;
-	size_t	len;
+	int	len;
 
+	if (g_table && src_env == g_table->env)
+		return (0);
 	if (g_table && g_table->env)
 		free_array(g_table->env);
 	if (g_table)
 		free(g_table);
+	g_table = NULL;
+	if (!src_env)
+		return (0);
 	g_table = malloc(sizeof(t_table));
 	if (!g_table)
-		return ;
-	word = count_array(src_env);
-	g_table->env = malloc((word + 1) * sizeof(char *));
+		return (-1);
+	len = arrlen(src_env);
+	g_table->env = arrndup(src_env, len);
 	if (!g_table->env)
-		return ;
-	word = -1;
-	while (src_env[++word])
-	{
-		len = ft_strlen(src_env[word]);
-		g_table->env[word] = malloc((len + 1) * sizeof(char));
-		if (!g_table->env[word])
-			return ;
-		(void)ft_strlcpy(g_table->env[word], src_env[word], len + 1);
-	}
-	g_table->env[word] = NULL;
-	g_table->count = word;
+		return (-1);
+	g_table->size = len;
+	return (0);
 }
 
 // add or update environment variable
-void	addenv(char *entry)
+int	addenv(char *entry)
 {
-	size_t	len;
-	size_t	word;
+	char	**ptr;
 	char	**new_env;
 
-	new_env = malloc((g_table->count + 1 + (bool)(fetchenv(entry)))
-			* sizeof(char *));
-	if (!new_env)
-		return ;
-	word = -1;
-	while (g_table->env[++word])
+	ptr = fetchenv(entry);
+	if (ptr)
 	{
-		len = ft_strchr(entry, '=') - entry;
-		if (ft_strncmp(entry, g_table->env[word], len) == 0
-			&& g_table->env[word][len] == '=')
-			continue ;
-		len = ft_strlen(g_table->env[word]);
-		new_env[word] = malloc((len + 1) * sizeof(char));
-		if (!new_env[word])
-			return ;
-		(void)ft_strlcpy(new_env[word], g_table->env[word], len + 1);
+		free(ptr[0]);
+		ptr[0] = ft_strdup(entry);
+		if (!ptr[0])
+			return (-1);
+		return (0);
 	}
-	new_env[word] = entry;
-	new_env[++word] = NULL;
-	initenv(new_env);
+	new_env = arrndup(g_table->env, g_table->size + 1);
+	if (!new_env)
+		return (-1);
+	new_env[g_table->size] = ft_strdup(entry);
+	if (!new_env[g_table->size])
+		return (-1);
+	new_env[g_table->size + 1] = NULL;
+	if (initenv(new_env) == -1)
+		return (-1);
 	free_array(new_env);
+	return (0);
 }
 
 // remove environment variable by key
-void	rmenv(char *key)
+int	rmenv(char *key)
 {
-	size_t	len;
-	size_t	word;
-	size_t	entry;
-	char	**new_env;
+	int	word;
+	int	keylen;
 
 	if (!fetchenv(key))
-		return ;
-	new_env = malloc(g_table->count * sizeof(char *));
-	if (!new_env)
-		return ;
+		return (0);
+	keylen = ft_strlen(key);
 	word = -1;
-	entry = -1;
 	while (g_table->env[++word])
-	{
-		if (ft_strcmp(key, g_table->env[word]) == 0)
-			continue ;
-		len = ft_strlen(g_table->env[word]);
-		new_env[++entry] = malloc((len + 1) * sizeof(char));
-		if (!new_env[entry])
-			return ;
-		(void)ft_strlcpy(new_env[entry], g_table->env[word], len + 1);
-	}
-	new_env[++entry] = NULL;
-	initenv(new_env);
-	free_array(new_env);
-}
-
-// return sorted copy of environment
-char	**get_sorted_env(void)
-{
-	char	**srtd;
-	size_t	i;
-	size_t	j;
-
-	srtd = malloc((g_table->count + 1) * sizeof(char *));
-	if (!srtd)
-		return (NULL);
-	i = -1;
-	while (++i <= g_table->count)
-		srtd[i] = g_table->env[i];
-	i = -1;
-	while (++i < g_table->count - 1)
-	{
-		j = i;
-		while (++j < g_table->count)
-		{
-			if (ft_strcmp(srtd[i], srtd[j]) > 0)
-			{
-				srtd[i] = (char *)((uintptr_t)srtd[i] ^ (uintptr_t)srtd[j]);
-				srtd[j] = (char *)((uintptr_t)srtd[i] ^ (uintptr_t)srtd[j]);
-				srtd[i] = (char *)((uintptr_t)srtd[i] ^ (uintptr_t)srtd[j]);
-			}
-		}
-	}
-	return (srtd);
+		if (ft_strncmp(key, g_table->env[word], keylen) == 0
+			&& g_table->env[word][keylen] == '=')
+			break ;
+	free(g_table->env[word]);
+	while (g_table->env[++word])
+		g_table->env[word - 1] = g_table->env[word];
+	g_table->env[word - 1] = NULL;
+	g_table->size--;
+	return (0);
 }
