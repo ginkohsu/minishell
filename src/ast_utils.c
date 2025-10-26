@@ -6,11 +6,11 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 14:31:41 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/18 01:36:50 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/10/26 21:17:09 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ast.h"
+#include "minishell.h"
 
 t_ast	*create_command_node(void)
 {

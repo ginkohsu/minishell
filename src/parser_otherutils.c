@@ -6,11 +6,11 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 14:19:44 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/17 15:58:26 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/10/26 21:19:57 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ast.h"
+#include "minishell.h"
 
 int	is_redirection_token(t_token *token)
 {

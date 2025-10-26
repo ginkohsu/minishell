@@ -6,11 +6,11 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:27:32 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/17 19:21:39 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/10/26 21:17:34 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ast.h"
+#include "minishell.h"
 
 char	*expand_simple_env_var(char *var_name)
 {
@@ -32,6 +32,8 @@ char	*expand_token_value_basic(t_token *token)
 		return (expand_simple_env_var(token->value));
 	else if (token->type == TOKEN_EXIT_STATUS)
 		return (expand_simple_env_var("?"));
+	else if (token->type == TOKEN_DQUOTE)
+		return (expand_vars_dquote(token->value));
 	else
 		return (ft_strdup(token->value));
 }

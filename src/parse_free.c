@@ -6,11 +6,11 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 23:59:13 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/18 00:12:47 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/10/26 21:19:05 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ast.h"
+#include "minishell.h"
 
 static void	free_redir(t_redir *redir)
 {

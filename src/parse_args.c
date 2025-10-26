@@ -6,11 +6,11 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 15:41:59 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/17 23:49:31 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/10/26 21:18:28 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ast.h"
+#include "minishell.h"
 
 int	add_argument_to_cmd(t_command *cmd, char *arg)
 {

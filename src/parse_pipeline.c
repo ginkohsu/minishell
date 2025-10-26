@@ -6,11 +6,11 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 15:41:59 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/17 23:46:44 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/10/26 21:19:29 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ast.h"
+#include "minishell.h"
 
 static t_ast	*handle_pipe_expression(t_parser *parser, t_ast *left)
 {

@@ -6,11 +6,11 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 19:53:48 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/18 01:05:44 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/10/26 21:19:40 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ast.h"
+#include "minishell.h"
 
 static int create_add_redir(t_token_type type, char *filename, t_command *cmd)
 {

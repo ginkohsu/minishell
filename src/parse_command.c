@@ -6,11 +6,11 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 19:19:09 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/18 01:38:44 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/10/26 21:18:51 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ast.h"
+#include "minishell.h"
 
 static int	process_redirection_token(t_parser *parser, t_ast *cmd_node)
 {

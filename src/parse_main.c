@@ -6,11 +6,11 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 15:41:59 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/18 01:41:41 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/10/26 21:19:17 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ast.h"
+#include "minishell.h"
 
 static t_ast	*parse_from_tokens(t_token *tokens, int count)
 {
