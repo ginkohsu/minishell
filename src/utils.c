@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:26:55 by jinxu             #+#    #+#             */
-/*   Updated: 2025/09/27 02:37:36 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/10/26 21:51:00 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ int	is_special_char(char c)
 			|| c == '"'|| c == '$');
 }
 
-//// below functins for testing only: ////////////////
-static const char *get_token_type_name(t_token_type type) {
+//// below functins for testing 
+const	char *get_token_type_name(t_token_type type) {
 if (type == TOKEN_WORD) return "WORD";
 if (type == TOKEN_PIPE) return "PIPE";
 if (type == TOKEN_REDIR_IN) return "REDIR_IN";

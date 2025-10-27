@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 14:25:43 by jinxu             #+#    #+#             */
-/*   Updated: 2025/09/29 10:43:22 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/10/26 21:13:30 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static int	is_env_var_char(char c)
 			(c >= '0' && c <= '9') || c == '_');
 }
 
-static char	*handle_env_var(char **input)
+char	*handle_env_var(char **input)
 {
 	char	*start;
 	int		len;

@@ -1,5 +1,10 @@
 NAME := minishell
-SRC := main.c arenalloc.c execution.c free.c handle_env.c handle_quote.c handle_redir.c handle_word.c lexer.c utils.c
+SRC := ast_utils.c     handle_redir.c  parse_command.c   parser_otherutils.c \
+expand_utils.c  handle_word.c   parse_free.c      parser_utils.c \
+free.c          lexer.c         parse_main.c      utils.c \
+handle_env.c    main.c          parse_pipeline.c \
+handle_quote.c  parse_args.c    parse_redir.c \
+expand_vars_dquote.c ast_printer.c 
 SRC_DIR := src
 OBJ = $(addprefix $(OBJ_DIR)/,$(SRC:.c=.o))
 
