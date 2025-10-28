@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 14:58:21 by jinxu             #+#    #+#             */
-/*   Updated: 2025/09/29 10:37:15 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/10/28 19:10:39 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static char	*handle_quoted_content(char **input, char quote_char)
 		(*input)++;
 		return (content);
 	}
-	printf("Error: Unclosed quote\n");
+	printf("syntax error: unclosed quote\n");
 	return (NULL);
 }
 

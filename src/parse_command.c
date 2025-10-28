@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 19:19:09 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/26 21:18:51 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/10/28 19:18:19 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,12 @@ t_ast	*parse_command(t_parser *parser)
 		if (!process_current_token(parser, cmd_node, token))
 			return (NULL);
 		token = parser_peek(parser, 0);
+	}
+	if ((!cmd_node->cmd.argv || !cmd_node->cmd.argv[0]) && !cmd_node->cmd.redirs)
+	{
+		printf("syntax error: empty command\n");
+		free_ast(cmd_node);
+		return (NULL);
 	}
 		return (cmd_node);
 }
