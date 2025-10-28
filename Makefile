@@ -1,46 +1,44 @@
 NAME := minishell
-SRC := ast_utils.c     handle_redir.c  parse_command.c   parser_otherutils.c \
-expand_utils.c  handle_word.c   parse_free.c      parser_utils.c \
-free.c          lexer.c         parse_main.c      utils.c \
-handle_env.c    main.c          parse_pipeline.c \
-handle_quote.c  parse_args.c    parse_redir.c \
-expand_vars_dquote.c ast_printer.c 
-SRC_DIR := src
-OBJ = $(addprefix $(OBJ_DIR)/,$(SRC:.c=.o))
-
-HEADER := include/$(NAME).h
-OBJ_DIR := obj
+CC := cc
+CFLAGS := -Wall -Wextra -Werror -g
 LIBFT_DIR := libft
 LIBFT := $(LIBFT_DIR)/libft.a
-INC := -I./include -I./libft/include
+INC := -I./include -I./libft/include -I.
+OBJ_DIR := obj
 
-CFLAGS := -Wall -Wextra -Werror
+SRCS := main.c stub.c ast_utils.c expand_utils.c free.c handle_env.c \
+	handle_quote.c handle_redir.c handle_word.c lexer.c parse_args.c \
+	parse_command.c parse_free.c parse_main.c parse_pipeline.c parse_redir.c \
+	parser_otherutils.c parser_utils.c utils.c array_utils.c builtins.c \
+	builtins_more.c children.c environment.c exec_ast.c exec_cmd.c \
+	exec_utils.c exittool.c redirection.c
 
-.PHONY: all clean fclean re bonus
+OBJS := $(addprefix $(OBJ_DIR)/,$(SRCS:.c=.o))
+
+VPATH := src:src/parsing:src/execution
 
 all: $(NAME)
 
-bonus: $(NAME)
-
 $(LIBFT):
-	$(MAKE) -C $(LIBFT_DIR) --no-print-directory
+	$(MAKE) -C $(LIBFT_DIR)
 
-$(NAME): $(OBJ) $(LIBFT)
-	cc $(CFLAGS) $(OBJ) -L./$(LIBFT_DIR) -lft -lreadline -o $(NAME)
+$(NAME): $(OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_DIR) -lft -lreadline -o $(NAME)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEADER) | $(OBJ_DIR)
-	cc $(CFLAGS) $(INC) -c $< -o $@
+$(OBJ_DIR)/%.o: %.c include/ast.h include/execution.h include/minishell.h | $(OBJ_DIR)
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
 
 clean:
 	@rm -rf $(OBJ_DIR)
-	@$(MAKE) -C $(LIBFT_DIR) clean
+	$(MAKE) -C $(LIBFT_DIR) clean
 
 fclean: clean
-	@rm -f $(NAME)
-	@rm -f compile_commands.json
-	@$(MAKE) -C $(LIBFT_DIR) fclean
+	rm -f $(NAME)
+	$(MAKE) -C $(LIBFT_DIR) fclean
 
 re: fclean all
+
+.PHONY: all clean fclean re
