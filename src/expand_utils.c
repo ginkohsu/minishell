@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:27:32 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/26 21:17:34 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/10/29 00:39:05 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,10 @@ char	*expand_simple_env_var(char *var_name)
 	char	*value;
 
 	if(ft_strcmp(var_name, "?") == 0)
-		return (ft_strdup("0"));
+	{
+		value = ft_itoa(g_exit_status);
+		return (value);
+	}
 	value = getenv(var_name);
 	if (value)
 		return (ft_strdup(value));
