@@ -40,6 +40,7 @@ SRC =	ft_isalpha.c \
 		ft_printf.c \
 		ft_fprintf.c \
 		ft_strapp.c \
+		ft_strprep.c \
 		ft_isalpha.c ft_isdigit.c ft_isalnum.c ft_isascii.c \
 		ft_strlen_z.c ft_strjoin_safe.c get_next_line.c \
 		print_ptr.c print_str.c print_unsignedint.c

@@ -11,17 +11,17 @@
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <errno.h>
 
-int	ft_atoi(const char *str)
+long long	ft_atoll(const char *str)
 {
-	short		i;
-	short		pm;
-	long long	integer;
-	int			ans;
+	short	i;
+	short	pm;
+	long long	llong;
 
+	if (!ft_strncmp(str, "-9223372036854775807", 20))
+		return (LLONG_MIN);
 	i = 0;
-	integer = 0;
+	llong = 0;
 	pm = 1;
 	while ((str[i] >= '\t' && str[i] <= '\r') || str[i] == ' ')
 		i++;
@@ -29,9 +29,6 @@ int	ft_atoi(const char *str)
 		if (str[i++] == '-')
 			pm *= -1;
 	while (str[i] >= '0' && str[i] <= '9')
-		integer = integer * 10 + (str[i++] - '0');
-	if (integer > INT_MAX || integer < INT_MIN)
-		errno = ERANGE;
-	ans = (int)integer;
-	return (ans *= pm);
+		llong = llong * 10 + (str[i++] - '0');
+	return (llong *= pm);
 }
