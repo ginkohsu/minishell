@@ -37,7 +37,7 @@ t_ast	*create_pipe_node(t_ast *left, t_ast *right)
 	if (!ast)
 		return (NULL);
 	ast->type = PIPE;
-	ast->pipe.left = left;
-	ast->pipe.right = right;
+	ast->s_pipe.left = left;
+	ast->s_pipe.right = right;
 	return (ast);
 }

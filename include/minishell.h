@@ -16,6 +16,7 @@
 extern int g_exit_status; //for exit status
 
 # include "libft.h"
+# include "execution.h"
 # include <stdlib.h>
 # include <stdio.h>
 # include <readline/readline.h>
@@ -24,71 +25,6 @@ extern int g_exit_status; //for exit status
 
 # define MAX_TOKENS 1000
 
-typedef enum e_token_type {
-	TOKEN_WORD,
-	TOKEN_PIPE,
-	TOKEN_REDIR_IN,
-	TOKEN_REDIR_OUT,
-	TOKEN_REDIR_APPEND,// >>
-	TOKEN_HEREDOC,// <<
-	TOKEN_SQUOTE,// ''
-	TOKEN_DQUOTE,// ""
-	TOKEN_ENV_VAR, //$HOME
-	TOKEN_EXIT_STATUS, //$?
-	TOKEN_EOF //?
-} t_token_type;
-
-typedef struct s_token {
-	t_token_type type;
-	char *value;
-} t_token;
-
-typedef struct	s_parser
-{
-	t_token	*tokens;
-	int		token_count;
-	int		current_pos;
-}	t_parser;
-
-typedef enum	e_parse_status
-{
-	PARSE_SUCCESS,
-	PARSE_SYNTAX_ERROR,
-	PARSE_MALLOC_ERROR
-}	t_parse_status;
-
-typedef struct s_redir
-{
-	t_token_type	type;
-	char			*filename;
-	struct s_redir	*next;
-}	t_redir;
-
-typedef struct s_command
-{
-	char		**argv;
-	t_redir		*redirs;
-}	t_command;
-
-typedef enum e_node_type
-{
-	CMD,
-	PIPE
-}	t_node_type;
-
-typedef struct s_ast
-{
-	t_node_type	type;
-	union
-	{
-		t_command	cmd;
-		struct
-		{
-			struct s_ast	*left;
-			struct s_ast	*right;
-		}	pipe;
-	};
-}	t_ast;
 
 //tokenizing
 void			skip_whitespace(char **input);

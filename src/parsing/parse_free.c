@@ -47,8 +47,8 @@ void	free_ast(t_ast	*ast)
 		free_command(&ast->cmd);
 	else
 	{
-		free_ast(ast->pipe.left);
-		free_ast(ast->pipe.right);
+		free_ast(ast->s_pipe.left);
+		free_ast(ast->s_pipe.right);
 	}
 	free(ast);
 }

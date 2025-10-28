@@ -61,14 +61,14 @@ void	setup_redirections(t_redir *redirs)
 {
 	while (redirs)
 	{
-		if (redirs->type == REDIR_HEREDOC)
+		if (redirs->type == TOKEN_HEREDOC)
 			heredoc(redirs->filename);
-		else if (redirs->type == REDIR_IN)
+		else if (redirs->type == TOKEN_REDIR_IN)
 			redirect(redirs->filename, O_RDONLY, 0, STDIN_FILENO);
-		else if (redirs->type == REDIR_OUT)
+		else if (redirs->type == TOKEN_REDIR_OUT)
 			redirect(redirs->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644,
 				STDOUT_FILENO);
-		else if (redirs->type == REDIR_APPEND)
+		else if (redirs->type == TOKEN_REDIR_APPEND)
 			redirect(redirs->filename, O_WRONLY | O_CREAT | O_APPEND, 0644,
 				STDOUT_FILENO);
 		redirs = redirs->next;

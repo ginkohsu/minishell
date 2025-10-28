@@ -15,17 +15,44 @@
 
 # include "../libft/include/libft.h"
 
-typedef enum e_redir_type
+typedef enum e_token_type
 {
-	REDIR_IN,
-	REDIR_OUT,
-	REDIR_APPEND,
-	REDIR_HEREDOC
-}							t_redir_type;
+	TOKEN_WORD,
+	TOKEN_PIPE,
+	TOKEN_REDIR_IN,
+	TOKEN_REDIR_OUT,
+	TOKEN_REDIR_APPEND, // >>
+	TOKEN_HEREDOC,      // <<
+	TOKEN_SQUOTE,       // ''
+	TOKEN_DQUOTE,       // ""
+	TOKEN_ENV_VAR,      //$HOME
+	TOKEN_EXIT_STATUS,  //$?
+	TOKEN_EOF           //?
+}							t_token_type;
+
+typedef struct s_token
+{
+	t_token_type			type;
+	char					*value;
+}							t_token;
+
+typedef struct s_parser
+{
+	t_token					*tokens;
+	int						token_count;
+	int						current_pos;
+}							t_parser;
+
+typedef enum e_parse_status
+{
+	PARSE_SUCCESS,
+	PARSE_SYNTAX_ERROR,
+	PARSE_MALLOC_ERROR
+}							t_parse_status;
 
 typedef struct s_redir
 {
-	t_redir_type			type;
+	t_token_type			type;
 	char					*filename;
 	struct s_redir			*next;
 }							t_redir;
@@ -57,7 +84,7 @@ typedef struct s_ast
 }							t_ast;
 
 t_ast						*create_test_ast(void);
-void						execute_ast(t_ast *ast); // Amit's execute part!
+void	execute_ast(t_ast *ast); // Amit's execute part!
 void						free_ast(t_ast *ast);
 
 #endif
