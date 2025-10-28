@@ -6,11 +6,25 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 14:58:21 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/28 19:10:39 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/10/28 23:40:36 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	check_unclosed_quote(char *input)
+{
+    char    quote_char;
+    char    *ptr;
+
+    if(*input != '\'' && *input != '"')
+        return (0);
+    quote_char = *input;
+    ptr = input + 1;
+    while (*ptr && *ptr !=quote_char)
+        ptr++;
+    return (*ptr != quote_char);
+}
 
 static char	*handle_quoted_content(char **input, char quote_char)
 {
@@ -35,7 +49,6 @@ static char	*handle_quoted_content(char **input, char quote_char)
 		(*input)++;
 		return (content);
 	}
-	printf("syntax error: unclosed quote\n");
 	return (NULL);
 }
 

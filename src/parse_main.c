@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 15:41:59 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/28 19:16:09 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/10/29 00:06:55 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ t_ast	*parse(char *input)
 	int			token_count;
 	t_token		*tokens;
 	
-	if (!input || !*input)
+	if (!input || is_only_whitespace(input))
 		return (NULL);
 	tokens = tokenize(input, &token_count);
 	if (!tokens)
