@@ -12,7 +12,8 @@
 
 #include "minishell.h"
 
-static void	handle_special_char(char **input, t_token *collected_tokens, int *count)
+static void	handle_special_char(char **input,
+			 t_token *collected_tokens, int *count)
 {
 	char current;
 
@@ -27,7 +28,8 @@ static void	handle_special_char(char **input, t_token *collected_tokens, int *co
 		handle_single_special_char(input, collected_tokens, count);
 }
 
-static void	handle_word_char(char **input, t_token *collected_tokens, int *count)
+static void	handle_word_char(char **input,
+			t_token *collected_tokens, int *count)
 {
 		char	*word;
 
@@ -40,12 +42,19 @@ static void	handle_word_char(char **input, t_token *collected_tokens, int *count
 		}
 }
 
-static void	process_char(char **input, t_token *collected_tokens, int *count)
+static int	process_and_check_quote(char **input_ptr, 
+			t_token *collected_tokens, int *count)
 {
-	if (is_special_char(**input))
-		handle_special_char(input, collected_tokens, count);
+	if (check_unclosed_quote(*input_ptr))
+	{
+		printf("syntax error: unclosed quote\n");
+		return (0);
+	}
+	if (is_special_char(**input_ptr))
+		handle_special_char(input_ptr, collected_tokens, count);
 	else
-		handle_word_char(input, collected_tokens, count);
+		handle_word_char(input_ptr, collected_tokens, count);
+	return (1);
 /*	{
 		value = malloc(2);
 		if (!value)
@@ -70,7 +79,8 @@ static void	process_char(char **input, t_token *collected_tokens, int *count)
 */
 }
 
-static t_token	*copy_to_heap(t_token *collected, int count, int *token_count)
+static t_token	*copy_to_heap(t_token *collected,
+				int count, int *token_count)
 {
 	t_token	*heap_tokens;
 	int		i;
@@ -103,7 +113,11 @@ t_token	*tokenize(char *input, int *token_count)
 		skip_whitespace(&input_ptr);
 		if (!*input_ptr)
 			break ;
-		process_char(&input_ptr, collected_tokens, &count);
+		if(!process_and_check_quote(&input_ptr, collected_tokens, &count))
+		{
+			cleanup_stack_tokens(collected_tokens, count);
+			return (NULL);
+		}
 	}
 	collected_tokens[count].type = TOKEN_EOF;
 	collected_tokens[count].value = NULL;

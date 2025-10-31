@@ -76,5 +76,11 @@ t_ast	*parse_command(t_parser *parser)
 			return (NULL);
 		token = parser_peek(parser, 0);
 	}
+	if ((!cmd_node->cmd.argv || !cmd_node->cmd.argv[0]) && !cmd_node->cmd.redirs)
+	{
+		printf("syntax error: empty command\n");
+		free_ast(cmd_node);
+		return (NULL);
+	}
 		return (cmd_node);
 }

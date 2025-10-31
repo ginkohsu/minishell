@@ -12,6 +12,18 @@
 
 #include "minishell.h"
 
+void    cleanup_stack_tokens(t_token *tokens, int count)
+{
+    int i;
+
+    i = 0;
+    while (i < count)
+    {
+        free(tokens[i].value);
+        i++;
+	}
+}
+
 void	free_tokens(t_token *tokens, int count)
 {
 	int	i;

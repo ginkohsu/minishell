@@ -17,7 +17,10 @@ char	*expand_simple_env_var(char *var_name)
 	char	*value;
 
 	if(ft_strcmp(var_name, "?") == 0)
-		return (ft_strdup("0"));
+	{
+		value = ft_itoa(g_exit_status);
+		return (value);
+	}
 	value = getenv(var_name);
 	if (value)
 		return (ft_strdup(value));

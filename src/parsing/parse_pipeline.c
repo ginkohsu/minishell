@@ -12,6 +12,34 @@
 
 #include "minishell.h"
 
+static int	check_redirect_syntax(t_parser *parser)
+{
+	int			i;
+	t_token*	next_token;
+
+	i = 0;
+	while (i < (parser->token_count - 1))
+	{
+		if (is_redirection_token(&parser->tokens[i]))
+		{
+			next_token = &parser->tokens[i + 1];
+			if (next_token->type == TOKEN_EOF)
+			{
+				printf("syntax error near unexpected token 'newline'\n");
+				return (1);
+			}
+			if (!is_string_token(next_token))
+			{
+				printf("syntax error near unexpected token '%s'\n", 
+				next_token->value);
+				return (1);
+			}
+		}
+		i++;
+	}
+	return (0);
+}
+
 static t_ast	*handle_pipe_expression(t_parser *parser, t_ast *left)
 {
 	t_ast	*right;
@@ -30,7 +58,9 @@ t_ast	*parse_pipeline(t_parser *parser)
 {
 	t_ast	*left;
 	t_token	*token;
-	
+
+	if (check_redirect_syntax(parser))
+		return (NULL);
 	left = parse_command(parser);
 	if (!left)
 		return (NULL);

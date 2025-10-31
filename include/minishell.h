@@ -29,7 +29,9 @@ extern int g_exit_status; //for exit status
 //tokenizing
 void			skip_whitespace(char **input);
 int				ft_isspace(char c);
+int				is_only_whitespace(char *str);
 int				is_special_char(char c);
+int				check_unclosed_quote(char *input);
 char			*extract_word(char **input);
 void			handle_quote_char(char **input, 
 				t_token *collected_tokens, int *count);
@@ -44,6 +46,7 @@ char    		*handle_env_var(char **input);
 t_token			*tokenize(char *input, int *token_count);
 
 void			free_tokens(t_token *tokens, int count);
+void    		cleanup_stack_tokens(t_token *tokens, int count);
 
 //parsing
 t_parser	parser_init(t_token *tokens, int count);
