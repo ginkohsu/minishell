@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 16:55:04 by jinxu             #+#    #+#             */
-/*   Updated: 2025/11/02 17:43:19 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/02 18:09:03 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef MINISHELL_H
@@ -65,7 +65,6 @@ t_ast		*parse_command(t_parser *parser);
 int			add_argument_to_cmd(t_command *cmd, char *arg);
 int			parse_redirection(t_parser *parser, t_command *cmd);
 t_ast		*parse(char *input);
-void		execute_ast(t_ast *ast);
 void		free_ast(t_ast *ast);
 
 // for testing:

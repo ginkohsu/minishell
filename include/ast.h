@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 11:15:02 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/10 11:13:49 by aloimusa         ###   ########.fr       */
+/*   Updated: 2025/11/02 18:09:37 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,6 @@ typedef struct s_ast
 }							t_ast;
 
 t_ast						*create_test_ast(void);
-void	execute_ast(t_ast *ast); // Amit's execute part!
 void						free_ast(t_ast *ast);
 
 #endif

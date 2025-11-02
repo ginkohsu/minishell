@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/17 17:06:13 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/26 21:37:49 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/02 18:17:24 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int main(int ac, char **av, char **env)
 		}
 		if (*line)
 			add_history(line);
-		printf("You entered: %s\n", line);
+//		printf("You entered: %s\n", line);
 		tree = parse(line);
 		execute_ast(tree);
 		free(line);
