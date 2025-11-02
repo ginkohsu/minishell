@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/17 17:06:13 by jinxu             #+#    #+#             */
-/*   Updated: 2025/11/02 18:17:24 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/03 01:07:01 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,30 @@ void	sig_handler(int signum)
 	rl_redisplay();
 }
 
+static void	cleanup_and_exit(void)
+{
+	clear_history();
+	initenv(NULL);
+}
+
+static void	process_input(char *line)
+{
+	t_ast	*tree;
+
+	if (!*line)
+		return;
+	add_history(line);
+	tree = parse(line);
+	if (tree)
+	{
+		execute_ast(tree);
+		free_ast(tree);
+	}
+}
+
 int main(int ac, char **av, char **env)
 {
 	char	*line;
-	t_ast	*tree;
 
 	(void)ac;
 	(void)av;
@@ -36,16 +56,11 @@ int main(int ac, char **av, char **env)
 		line = readline("minishell$ ");
 		if (!line)
 		{
-			printf("exit\n");
-			break;
+			cleanup_and_exit();
+			break ;
 		}
-		if (*line)
-			add_history(line);
-//		printf("You entered: %s\n", line);
-		tree = parse(line);
-		execute_ast(tree);
+		process_input(line);
 		free(line);
 	}
-	initenv(NULL);
-	return 0;
+	return (g_exit_status);
 }
