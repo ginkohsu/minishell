@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 19:53:48 by jinxu             #+#    #+#             */
-/*   Updated: 2025/11/02 17:36:59 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/03 00:09:06 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,28 +50,23 @@ static int	validate_redir_syntax(t_parser *parser)
 	return (1);
 }
 
-static int	process_redir_tokens(t_parser *parser, char **filename)
-{
-	*filename = expand_token_value_basic(parser_peek(parser, 0));
-	if (!*filename)
-		return (0);
-	parser_consume(parser);
-	return (1);
-}
-
 int	parse_redirection(t_parser *parser, t_command *cmd)
 {
 	t_token	*redir_token;
+	t_token	*filename_token;
 	char	*filename;
 
 	if (!validate_redir_syntax(parser))
 		return (PARSE_SYNTAX_ERROR);
 	redir_token = parser_peek(parser, -1);
-	if (!process_redir_tokens(parser, &filename))
-	{
-		free(filename);
+	filename_token = parser_peek(parser, 0);
+	filename = expand_token_value_basic(filename_token);
+	if (!filename)
+		filename = ft_strdup("");
+	parser_consume(parser);
+	filename = merge_adjacent_tokens(parser, filename, filename_token);	
+	if (!filename)
 		return (PARSE_MALLOC_ERROR);
-	}
 	if (!create_add_redir(redir_token->type, filename, cmd))
 	{
 		free(filename);

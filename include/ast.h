@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 11:15:02 by jinxu             #+#    #+#             */
-/*   Updated: 2025/11/02 18:09:37 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/02 23:16:15 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ typedef struct s_token
 {
 	t_token_type			type;
 	char					*value;
+	int						no_space_after;
 }							t_token;
 
 typedef struct s_parser

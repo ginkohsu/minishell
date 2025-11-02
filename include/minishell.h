@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 16:55:04 by jinxu             #+#    #+#             */
-/*   Updated: 2025/11/02 18:09:03 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/03 00:06:55 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef MINISHELL_H
@@ -65,6 +65,9 @@ int			add_argument_to_cmd(t_command *cmd, char *arg);
 int			parse_redirection(t_parser *parser, t_command *cmd);
 t_ast		*parse(char *input);
 void		free_ast(t_ast *ast);
+
+t_token		*copy_to_heap(t_token *collected, int count, int *token_count);
+char		*merge_adjacent_tokens(t_parser *parser, char *current_arg, t_token *current_token);
 
 // for testing:
 void		print_ast(t_ast *ast, int depth);

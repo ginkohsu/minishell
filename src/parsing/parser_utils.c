@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 13:15:21 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/26 21:20:10 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/02 20:36:14 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,4 +51,12 @@ int	parser_check(t_parser *parser, t_token_type type)
 
 	token = parser_peek(parser, 0);
 	return (token && token->type == type);
+}
+
+void	set_no_space_after(t_token *token, char *input_after_token)
+{
+	if (*input_after_token && !ft_isspace(*input_after_token))
+		token->no_space_after = 1;
+	else
+		token->no_space_after = 0;
 }

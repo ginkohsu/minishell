@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 14:19:44 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/26 21:19:57 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/02 23:15:23 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,4 +34,24 @@ int	is_string_token(t_token *token)
 	return (token->type == TOKEN_WORD || token->type == TOKEN_SQUOTE
 		|| token->type == TOKEN_DQUOTE || token->type == TOKEN_ENV_VAR
 		|| token->type == TOKEN_EXIT_STATUS);
+}
+
+t_token	*copy_to_heap(t_token *collected, int count, int *token_count)
+{
+    t_token *heap_tokens;
+    int     i;
+
+    if (!collected || !count)
+        return (NULL);
+    heap_tokens = malloc(count * sizeof(t_token));
+    if (!heap_tokens)
+        return (NULL);
+    i = 0;
+    while (i < count)
+    {
+        heap_tokens[i] = collected[i];
+        i++;
+    }
+    *token_count = count;
+    return (heap_tokens);
 }

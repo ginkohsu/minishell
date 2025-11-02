@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 19:19:09 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/26 21:18:51 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/03 00:06:06 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,39 +25,64 @@ static int	process_redirection_token(t_parser *parser, t_ast *cmd_node)
 	return (1);
 }
 
-static int	process_string_token(t_parser *parser, t_ast *cmd_node)
+char	*merge_adjacent_tokens(t_parser *parser, char *current_arg, t_token *current_token)
 {
-	t_token	*token;
-	char	*expanded;
-	int		status;
+    t_token	*next_token;
+    char	*next_arg;
+    char	*merged;
 
-	token = parser_peek(parser, 0);
-	if (!token)
-		return (0);
-	expanded = expand_token_value_basic(token);
-	if (!expanded)
-	{
-		free_ast(cmd_node);
-		return (0);
-	}
-	parser_consume(parser);
-	status = add_argument_to_cmd(&cmd_node->cmd, expanded);
-	if (status != PARSE_SUCCESS)
-	{
-		free(expanded);
-		free_ast(cmd_node);
-		return (0);
-	}
-	return (1);
+	next_token = parser_peek(parser, 0);
+    while (next_token && is_string_token(next_token) && current_token->no_space_after)
+    {
+        next_arg = expand_token_value_basic(next_token);
+        if (!next_arg)
+			next_arg = ft_strdup("");
+
+        merged = ft_strjoin_safe(current_arg, next_arg);
+        free(current_arg);
+        free(next_arg);
+        if (!merged)
+            return NULL;
+
+        current_arg = merged;
+        parser_consume(parser);
+	
+		current_token = next_token;
+		next_token = parser_peek(parser, 0);
+    }
+
+    return (current_arg);
 }
 
-static int	process_current_token(t_parser *parser, t_ast *cmd_node,
-		t_token *token)
+static int	process_argument_token(t_parser *parser, t_ast *cmd_node)
+{
+	t_token	*token;
+	char	*arg;
+
+	token = parser_peek(parser, 0);
+	if (!token ||!is_string_token(token))
+		return (0);
+	
+	arg = expand_token_value_basic(token);
+	if (!arg)
+		arg = ft_strdup("");
+	parser_consume(parser);
+	arg = merge_adjacent_tokens(parser, arg, token);
+	if (!arg)
+	{
+		free_ast(cmd_node);
+		return (0);
+	}
+	
+	return (add_argument_to_cmd(&cmd_node->cmd, arg) == PARSE_SUCCESS);
+}
+
+static int	process_current_token(t_parser *parser, t_ast *cmd_node, t_token *token)
 {
 	if (is_redirection_token(token))
 		return (process_redirection_token(parser, cmd_node));
 	else if (is_string_token(token))
-		return (process_string_token(parser, cmd_node));
+		return (process_argument_token(parser, cmd_node));
 	parser_consume(parser);
 	return (1);
 }
