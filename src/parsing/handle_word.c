@@ -6,13 +6,13 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 17:16:48 by jinxu             #+#    #+#             */
-/*   Updated: 2025/09/25 14:44:48 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/02 17:34:30 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char *extract_word(char **input)
+char	*extract_word(char **input)
 {
 	char	*start;
 	int		len;
@@ -29,9 +29,9 @@ char *extract_word(char **input)
 	}
 	if (len == 0)
 		return (NULL);
-	word = malloc (len + 1);
+	word = malloc(len + 1);
 	if (!word)
-		return (NULL); //??????????????ERROR HANDLING
+		return (NULL);
 	ft_strlcpy(word, start, (size_t)(len + 1));
 	return (word);
 }

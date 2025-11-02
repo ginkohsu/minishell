@@ -6,16 +6,16 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 17:16:48 by jinxu             #+#    #+#             */
-/*   Updated: 2025/09/29 10:26:28 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/02 17:38:13 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	handle_special_char(char **input,
-			 t_token *collected_tokens, int *count)
+static void	handle_special_char(char **input, t_token *collected_tokens,
+		int *count)
 {
-	char current;
+	char	current;
 
 	current = **input;
 	if (current == '>' || current == '<')
@@ -28,22 +28,22 @@ static void	handle_special_char(char **input,
 		handle_single_special_char(input, collected_tokens, count);
 }
 
-static void	handle_word_char(char **input,
-			t_token *collected_tokens, int *count)
+static void	handle_word_char(char **input, t_token *collected_tokens,
+		int *count)
 {
-		char	*word;
+	char	*word;
 
-		word = extract_word(input);
-		if (word)
-		{
-			collected_tokens[*count].type = TOKEN_WORD;
-			collected_tokens[*count].value = word;
-			(*count)++;
-		}
+	word = extract_word(input);
+	if (word)
+	{
+		collected_tokens[*count].type = TOKEN_WORD;
+		collected_tokens[*count].value = word;
+		(*count)++;
+	}
 }
 
-static int	process_and_check_quote(char **input_ptr, 
-			t_token *collected_tokens, int *count)
+static int	process_and_check_quote(char **input_ptr, t_token *collected_tokens,
+		int *count)
 {
 	if (check_unclosed_quote(*input_ptr))
 	{
@@ -55,41 +55,18 @@ static int	process_and_check_quote(char **input_ptr,
 	else
 		handle_word_char(input_ptr, collected_tokens, count);
 	return (1);
-/*	{
-		value = malloc(2);
-		if (!value)
-			return ;  //???error handling
-		value[0] = **input;
-		value[1] = '\0';
-		collected_tokens[*count].type = get_token_type(**input);
-		collected_tokens[*count].value = value;
-		(*count)++;
-		(*input)++;
-	}
-	else
-	{
-		word =extract_word(input);
-		if (word)
-		{
-			collected_tokens[*count].type = TOKEN_WORD;
-			collected_tokens[*count].value = word;
-			(*count)++;
-		}
-	} 
-*/
 }
 
-static t_token	*copy_to_heap(t_token *collected,
-				int count, int *token_count)
+static t_token	*copy_to_heap(t_token *collected, int count, int *token_count)
 {
 	t_token	*heap_tokens;
 	int		i;
 
 	if (!collected || !count)
 		return (NULL);
-	heap_tokens = malloc (count * sizeof(t_token));
+	heap_tokens = malloc(count * sizeof(t_token));
 	if (!heap_tokens)
-		return (NULL); // ????????ERROR HANDLING
+		return (NULL);
 	i = 0;
 	while (i < count)
 	{
@@ -113,7 +90,7 @@ t_token	*tokenize(char *input, int *token_count)
 		skip_whitespace(&input_ptr);
 		if (!*input_ptr)
 			break ;
-		if(!process_and_check_quote(&input_ptr, collected_tokens, &count))
+		if (!process_and_check_quote(&input_ptr, collected_tokens, &count))
 		{
 			cleanup_stack_tokens(collected_tokens, count);
 			return (NULL);

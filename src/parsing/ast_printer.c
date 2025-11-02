@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ast_printer.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/02 17:32:03 by jinxu             #+#    #+#             */
+/*   Updated: 2025/11/02 17:32:05 by jinxu            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 const char	*get_redir_type_name(t_token_type type)
@@ -13,13 +25,13 @@ const char	*get_redir_type_name(t_token_type type)
 	return ("UNKNOWN");
 }
 
-const	char *get_node_type_name(t_node_type type)
+const char	*get_node_type_name(t_node_type type)
 {
 	if (type == PIPE)
-		return "PIPE";
+		return ("PIPE");
 	else if (type == CMD)
-		return "COMMAND";
-	return "UNKNOWN";
+		return ("COMMAND");
+	return ("UNKNOWN");
 }
 
 static void	print_redirections(t_redir *redirs, int depth)
@@ -29,7 +41,7 @@ static void	print_redirections(t_redir *redirs, int depth)
 	current = redirs;
 	while (current)
 	{
-		printf("%*sREDIR: %s %s\n", depth * 2, "", 
+		printf("%*sREDIR: %s %s\n", depth * 2, "",
 			get_redir_type_name(current->type), current->filename);
 		current = current->next;
 	}

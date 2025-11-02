@@ -15,7 +15,7 @@
 t_ast	*create_command_node(void)
 {
 	t_ast	*ast;
-	
+
 	ast = malloc(sizeof(t_ast));
 	if (!ast)
 	{
@@ -25,7 +25,6 @@ t_ast	*create_command_node(void)
 	ast->type = CMD;
 	ast->cmd.argv = NULL;
 	ast->cmd.redirs = NULL;
-
 	return (ast);
 }
 

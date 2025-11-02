@@ -6,14 +6,14 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 15:20:17 by jinxu             #+#    #+#             */
-/*   Updated: 2025/09/27 02:05:26 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/02 17:34:15 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	handle_redirect_char(char **input, 
-		t_token *collected_tokens, int *count)
+void	handle_redirect_char(char **input, t_token *collected_tokens,
+		int *count)
 {
 	char	current;
 	char	next;
@@ -38,8 +38,8 @@ void	handle_redirect_char(char **input,
 		handle_single_special_char(input, collected_tokens, count);
 }
 
-void	handle_single_special_char(char **input, 
-		t_token *collected_tokens, int *count)
+void	handle_single_special_char(char **input, t_token *collected_tokens,
+		int *count)
 {
 	char			current;
 	char			*value;
@@ -48,7 +48,7 @@ void	handle_single_special_char(char **input,
 	current = **input;
 	value = malloc(2);
 	if (!value)
-		return; //ERROR HANDLING????
+		return ;
 	value[0] = current;
 	value[1] = '\0';
 	if (current == '|')
@@ -60,7 +60,7 @@ void	handle_single_special_char(char **input,
 	else
 	{
 		free(value);
-		return;
+		return ;
 	}
 	collected_tokens[*count].type = type;
 	collected_tokens[*count].value = value;

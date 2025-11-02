@@ -15,7 +15,7 @@
 static void	free_redir(t_redir *redir)
 {
 	t_redir	*next;
-	
+
 	while (redir)
 	{
 		next = redir->next;
@@ -28,7 +28,7 @@ static void	free_redir(t_redir *redir)
 static void	free_command(t_command *cmd)
 {
 	int	i;
-	
+
 	if (cmd->argv)
 	{
 		i = 0;
@@ -39,7 +39,7 @@ static void	free_command(t_command *cmd)
 	free_redir(cmd->redirs);
 }
 
-void	free_ast(t_ast	*ast)
+void	free_ast(t_ast *ast)
 {
 	if (!ast)
 		return ;

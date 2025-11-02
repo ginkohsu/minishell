@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 15:41:59 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/26 21:19:17 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/02 17:36:12 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static t_ast	*parse_from_tokens(t_token *tokens, int count)
 	if (!ast)
 		return (NULL);
 	remaining = parser_peek(&parser, 0);
-	if (remaining && remaining->type != TOKEN_EOF) //unconsumed tokens at the end
+	if (remaining && remaining->type != TOKEN_EOF)
 	{
 		printf("syntax error near '%s'\n", remaining->value);
 		free_ast(ast);
@@ -34,15 +34,15 @@ static t_ast	*parse_from_tokens(t_token *tokens, int count)
 
 t_ast	*parse(char *input)
 {
-	t_ast		*ast;
-	int			token_count;
-	t_token		*tokens;
-	
+	t_ast	*ast;
+	int		token_count;
+	t_token	*tokens;
+
 	if (!input || !*input)
 		return (NULL);
 	tokens = tokenize(input, &token_count);
 	if (!tokens)
-		return (NULL); //ERROR HANDLING?
+		return (NULL);
 	ast = parse_from_tokens(tokens, token_count);
 	free_tokens(tokens, token_count);
 	return (ast);

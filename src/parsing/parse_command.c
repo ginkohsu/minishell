@@ -51,7 +51,8 @@ static int	process_string_token(t_parser *parser, t_ast *cmd_node)
 	return (1);
 }
 
-static int	process_current_token(t_parser *parser, t_ast *cmd_node, t_token *token)
+static int	process_current_token(t_parser *parser, t_ast *cmd_node,
+		t_token *token)
 {
 	if (is_redirection_token(token))
 		return (process_redirection_token(parser, cmd_node));
@@ -76,11 +77,12 @@ t_ast	*parse_command(t_parser *parser)
 			return (NULL);
 		token = parser_peek(parser, 0);
 	}
-	if ((!cmd_node->cmd.argv || !cmd_node->cmd.argv[0]) && !cmd_node->cmd.redirs)
+	if ((!cmd_node->cmd.argv || !cmd_node->cmd.argv[0])
+		&& !cmd_node->cmd.redirs)
 	{
 		printf("syntax error: empty command\n");
 		free_ast(cmd_node);
 		return (NULL);
 	}
-		return (cmd_node);
+	return (cmd_node);
 }

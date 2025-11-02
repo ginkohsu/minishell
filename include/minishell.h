@@ -6,49 +6,47 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 16:55:04 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/26 21:37:00 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/02 17:43:19 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-extern int g_exit_status; //for exit status
-
-# include "libft.h"
 # include "execution.h"
-# include <stdlib.h>
-# include <stdio.h>
-# include <readline/readline.h>
+# include "libft.h"
 # include <readline/history.h>
+# include <readline/readline.h>
 # include <signal.h>
+# include <stdio.h>
+# include <stdlib.h>
+
+extern int	g_exit_status; // for exit status
 
 # define MAX_TOKENS 1000
 
+// tokenizing
+void		skip_whitespace(char **input);
+int			ft_isspace(char c);
+int			is_only_whitespace(char *str);
+int			is_special_char(char c);
+int			check_unclosed_quote(char *input);
+char		*extract_word(char **input);
+void		handle_quote_char(char **input, t_token *collected_tokens,
+				int *count);
+void		handle_redirect_char(char **input, t_token *collected_tokens,
+				int *count);
+void		handle_single_special_char(char **input, t_token *collected_tokens,
+				int *count);
+void		handle_env_var_char(char **input, t_token *collected_tokens,
+				int *count);
+char		*handle_env_var(char **input);
 
-//tokenizing
-void			skip_whitespace(char **input);
-int				ft_isspace(char c);
-int				is_only_whitespace(char *str);
-int				is_special_char(char c);
-int				check_unclosed_quote(char *input);
-char			*extract_word(char **input);
-void			handle_quote_char(char **input, 
-				t_token *collected_tokens, int *count);
-void			handle_redirect_char(char **input, 
-				t_token *collected_tokens, int *count);
-void			handle_single_special_char(char **input,
-				t_token *collected_tokens, int *count);
-void			handle_env_var_char(char **input, 
-				t_token *collected_tokens, int *count);
-char    		*handle_env_var(char **input);
+t_token		*tokenize(char *input, int *token_count);
 
-t_token			*tokenize(char *input, int *token_count);
+void		free_tokens(t_token *tokens, int count);
+void		cleanup_stack_tokens(t_token *tokens, int count);
 
-void			free_tokens(t_token *tokens, int count);
-void    		cleanup_stack_tokens(t_token *tokens, int count);
-
-//parsing
+// parsing
 t_parser	parser_init(t_token *tokens, int count);
 t_token		*parser_peek(t_parser *parser, int offset);
 t_token		*parser_consume(t_parser *parser);
@@ -67,13 +65,12 @@ t_ast		*parse_command(t_parser *parser);
 int			add_argument_to_cmd(t_command *cmd, char *arg);
 int			parse_redirection(t_parser *parser, t_command *cmd);
 t_ast		*parse(char *input);
-void		execute_ast(t_ast *ast);//Amit's execute part?
+void		execute_ast(t_ast *ast);
 void		free_ast(t_ast *ast);
 
-
-//for testing:
-void			print_ast(t_ast *ast, int depth);
-void			print_tokens_debug(t_token *tokens, int count);
-const char		*get_token_type_name(t_token_type type);
-const char		*get_node_type_name(t_node_type type);
+// for testing:
+void		print_ast(t_ast *ast, int depth);
+void		print_tokens_debug(t_token *tokens, int count);
+const char	*get_token_type_name(t_token_type type);
+const char	*get_node_type_name(t_node_type type);
 #endif

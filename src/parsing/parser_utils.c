@@ -15,7 +15,7 @@
 t_parser	parser_init(t_token *tokens, int count)
 {
 	t_parser	parser;
-	
+
 	parser.tokens = tokens;
 	parser.token_count = count;
 	parser.current_pos = 0;
@@ -40,7 +40,7 @@ t_token	*parser_consume(t_parser *parser)
 	{
 		token = &(parser->tokens[parser->current_pos]);
 		parser->current_pos++;
-		return(token);
+		return (token);
 	}
 	return (NULL);
 }

@@ -12,15 +12,15 @@
 
 #include "minishell.h"
 
-void    cleanup_stack_tokens(t_token *tokens, int count)
+void	cleanup_stack_tokens(t_token *tokens, int count)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (i < count)
-    {
-        free(tokens[i].value);
-        i++;
+	i = 0;
+	while (i < count)
+	{
+		free(tokens[i].value);
+		i++;
 	}
 }
 
@@ -33,7 +33,7 @@ void	free_tokens(t_token *tokens, int count)
 	i = 0;
 	while (i < count)
 	{
-		if (tokens[i].value) 
+		if (tokens[i].value)
 			free(tokens[i].value);
 		i++;
 	}

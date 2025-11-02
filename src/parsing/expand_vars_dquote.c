@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 21:08:01 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/26 21:15:51 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/02 17:32:58 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static char	*expand_one_var(char **src)
 
 	name = handle_env_var(src);
 	if (ft_strcmp(name, "$") == 0)
-		return (name); // literal '$', return as-is
+		return (name);
 	if (ft_strcmp(name, "?") == 0)
 		val = ft_itoa(g_exit_status);
 	else
@@ -37,8 +37,8 @@ static char	*expand_one_var(char **src)
 
 char	*expand_vars_dquote(char *src)
 {
-    char	*res;
-    char	*tmp;
+	char	*res;
+	char	*tmp;
 	char	*join_tmp;
 
 	res = ft_strdup("");
@@ -50,14 +50,13 @@ char	*expand_vars_dquote(char *src)
 		{
 			tmp = ft_substr(src, 0, 1);
 			src++;
-        }
-        // Append and free only the first argument (res)
-        {
+		}
+		{
 			join_tmp = ft_strjoin_safe(res, tmp);
 			free(res);
 			res = join_tmp;
 		}
 		free(tmp);
 	}
-    return res;
+	return (res);
 }

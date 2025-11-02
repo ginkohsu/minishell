@@ -16,7 +16,7 @@ char	*expand_simple_env_var(char *var_name)
 {
 	char	*value;
 
-	if(ft_strcmp(var_name, "?") == 0)
+	if (ft_strcmp(var_name, "?") == 0)
 	{
 		value = ft_itoa(g_exit_status);
 		return (value);
@@ -40,4 +40,3 @@ char	*expand_token_value_basic(t_token *token)
 	else
 		return (ft_strdup(token->value));
 }
-

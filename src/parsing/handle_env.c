@@ -14,8 +14,8 @@
 
 static int	is_env_var_char(char c)
 {
-	return ((c >= 'a' && c <= 'z') || ( c >= 'A' && c <= 'Z') ||
-			(c >= '0' && c <= '9') || c == '_');
+	return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0'
+			&& c <= '9') || c == '_');
 }
 
 char	*handle_env_var(char **input)
@@ -41,13 +41,12 @@ char	*handle_env_var(char **input)
 		return (ft_strdup("$"));
 	var_name = malloc(len + 1);
 	if (!var_name)
-		return NULL;
+		return (NULL);
 	ft_strlcpy(var_name, start, (size_t)(len + 1));
 	return (var_name);
 }
 
-
-void handle_env_var_char(char **input, t_token *collected_tokens, int *count)
+void	handle_env_var_char(char **input, t_token *collected_tokens, int *count)
 {
 	char	*var_name;
 

@@ -14,8 +14,8 @@
 
 static int	check_redirect_syntax(t_parser *parser)
 {
-	int			i;
-	t_token*	next_token;
+	int		i;
+	t_token	*next_token;
 
 	i = 0;
 	while (i < (parser->token_count - 1))
@@ -30,8 +30,8 @@ static int	check_redirect_syntax(t_parser *parser)
 			}
 			if (!is_string_token(next_token))
 			{
-				printf("syntax error near unexpected token '%s'\n", 
-				next_token->value);
+				printf("syntax error near unexpected token '%s'\n",
+					next_token->value);
 				return (1);
 			}
 		}
@@ -43,7 +43,7 @@ static int	check_redirect_syntax(t_parser *parser)
 static t_ast	*handle_pipe_expression(t_parser *parser, t_ast *left)
 {
 	t_ast	*right;
-	
+
 	parser_consume(parser);
 	right = parse_pipeline(parser);
 	if (!right)
