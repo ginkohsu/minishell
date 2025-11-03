@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 17:16:48 by jinxu             #+#    #+#             */
-/*   Updated: 2025/11/02 23:17:54 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/03 01:56:58 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,36 +41,36 @@ static void	handle_word_char(char **input, t_token *collected_tokens,
 		(*count)++;
 	}
 }
-static void process_char_with_tracking(char **input,
-            t_token *collected_tokens, int *count)
+
+static void	process_char_with_tracking(char **input, t_token *collected_tokens,
+		int *count)
 {
-    int     prev_count;
+	int	prev_count;
 
-    prev_count = *count;
-
-    if (is_special_char(**input))
-        handle_special_char(input, collected_tokens, count);
-    else
-        handle_word_char(input, collected_tokens, count);
-    if (*count > prev_count)
-    {
-        if (**input && !ft_isspace(**input))
-            collected_tokens[prev_count].no_space_after = 1;
-        else
-            collected_tokens[prev_count].no_space_after = 0;
-    }
+	prev_count = *count;
+	if (is_special_char(**input))
+		handle_special_char(input, collected_tokens, count);
+	else
+		handle_word_char(input, collected_tokens, count);
+	if (*count > prev_count)
+	{
+		if (**input && !ft_isspace(**input))
+			collected_tokens[prev_count].no_space_after = 1;
+		else
+			collected_tokens[prev_count].no_space_after = 0;
+	}
 }
 
-static int  process_and_check_quote(char **input_ptr,
-            t_token *collected_tokens, int *count)
+static int	process_and_check_quote(char **input_ptr, t_token *collected_tokens,
+		int *count)
 {
-    if (check_unclosed_quote(*input_ptr))
-    {
-        printf("syntax error: unclosed quote\n");
-        return (0);
-    }
-    process_char_with_tracking(input_ptr, collected_tokens, count);
-    return (1);
+	if (check_unclosed_quote(*input_ptr))
+	{
+		printf("syntax error: unclosed quote\n");
+		return (0);
+	}
+	process_char_with_tracking(input_ptr, collected_tokens, count);
+	return (1);
 }
 
 t_token	*tokenize(char *input, int *token_count)

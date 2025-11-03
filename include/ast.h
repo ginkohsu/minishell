@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 11:15:02 by jinxu             #+#    #+#             */
-/*   Updated: 2025/11/02 23:16:15 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/03 01:59:51 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,13 @@ typedef enum e_token_type
 	TOKEN_PIPE,
 	TOKEN_REDIR_IN,
 	TOKEN_REDIR_OUT,
-	TOKEN_REDIR_APPEND, // >>
-	TOKEN_HEREDOC,      // <<
-	TOKEN_SQUOTE,       // ''
-	TOKEN_DQUOTE,       // ""
-	TOKEN_ENV_VAR,      //$HOME
-	TOKEN_EXIT_STATUS,  //$?
-	TOKEN_EOF           //?
+	TOKEN_REDIR_APPEND,
+	TOKEN_HEREDOC,
+	TOKEN_SQUOTE,
+	TOKEN_DQUOTE,
+	TOKEN_ENV_VAR,
+	TOKEN_EXIT_STATUS,
+	TOKEN_EOF
 }							t_token_type;
 
 typedef struct s_token

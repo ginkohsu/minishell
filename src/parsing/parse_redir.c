@@ -64,7 +64,7 @@ int	parse_redirection(t_parser *parser, t_command *cmd)
 	if (!filename)
 		filename = ft_strdup("");
 	parser_consume(parser);
-	filename = merge_adjacent_tokens(parser, filename, filename_token);	
+	filename = merge_adjacent_tokens(parser, filename, filename_token);
 	if (!filename)
 		return (PARSE_MALLOC_ERROR);
 	if (!create_add_redir(redir_token->type, filename, cmd))

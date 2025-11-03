@@ -38,20 +38,20 @@ int	is_string_token(t_token *token)
 
 t_token	*copy_to_heap(t_token *collected, int count, int *token_count)
 {
-    t_token *heap_tokens;
-    int     i;
+	t_token	*heap_tokens;
+	int		i;
 
-    if (!collected || !count)
-        return (NULL);
-    heap_tokens = malloc(count * sizeof(t_token));
-    if (!heap_tokens)
-        return (NULL);
-    i = 0;
-    while (i < count)
-    {
-        heap_tokens[i] = collected[i];
-        i++;
-    }
-    *token_count = count;
-    return (heap_tokens);
+	if (!collected || !count)
+		return (NULL);
+	heap_tokens = malloc(count * sizeof(t_token));
+	if (!heap_tokens)
+		return (NULL);
+	i = 0;
+	while (i < count)
+	{
+		heap_tokens[i] = collected[i];
+		i++;
+	}
+	*token_count = count;
+	return (heap_tokens);
 }

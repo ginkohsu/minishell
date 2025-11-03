@@ -14,13 +14,13 @@
 # define EXECUTION_H
 
 # include "ast.h"
+# include <dirent.h>
 # include <errno.h>
 # include <fcntl.h>
 # include <stdbool.h>
 # include <stdint.h>
 # include <stdio.h>
 # include <string.h>
-# include <dirent.h>
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <unistd.h>

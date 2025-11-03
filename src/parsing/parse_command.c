@@ -25,33 +25,31 @@ static int	process_redirection_token(t_parser *parser, t_ast *cmd_node)
 	return (1);
 }
 
-char	*merge_adjacent_tokens(t_parser *parser, char *current_arg, t_token *current_token)
+char	*merge_adjacent_tokens(t_parser *parser, char *current_arg,
+		t_token *current_token)
 {
-    t_token	*next_token;
-    char	*next_arg;
-    char	*merged;
+	t_token	*next_token;
+	char	*next_arg;
+	char	*merged;
 
 	next_token = parser_peek(parser, 0);
-    while (next_token && is_string_token(next_token) && current_token->no_space_after)
-    {
-        next_arg = expand_token_value_basic(next_token);
-        if (!next_arg)
+	while (next_token && is_string_token(next_token)
+		&& current_token->no_space_after)
+	{
+		next_arg = expand_token_value_basic(next_token);
+		if (!next_arg)
 			next_arg = ft_strdup("");
-
-        merged = ft_strjoin_safe(current_arg, next_arg);
-        free(current_arg);
-        free(next_arg);
-        if (!merged)
-            return NULL;
-
-        current_arg = merged;
-        parser_consume(parser);
-	
+		merged = ft_strjoin_safe(current_arg, next_arg);
+		free(current_arg);
+		free(next_arg);
+		if (!merged)
+			return (NULL);
+		current_arg = merged;
+		parser_consume(parser);
 		current_token = next_token;
 		next_token = parser_peek(parser, 0);
-    }
-
-    return (current_arg);
+	}
+	return (current_arg);
 }
 
 static int	process_argument_token(t_parser *parser, t_ast *cmd_node)
@@ -60,9 +58,8 @@ static int	process_argument_token(t_parser *parser, t_ast *cmd_node)
 	char	*arg;
 
 	token = parser_peek(parser, 0);
-	if (!token ||!is_string_token(token))
+	if (!token || !is_string_token(token))
 		return (0);
-	
 	arg = expand_token_value_basic(token);
 	if (!arg)
 		arg = ft_strdup("");
@@ -73,11 +70,11 @@ static int	process_argument_token(t_parser *parser, t_ast *cmd_node)
 		free_ast(cmd_node);
 		return (0);
 	}
-	
 	return (add_argument_to_cmd(&cmd_node->cmd, arg) == PARSE_SUCCESS);
 }
 
-static int	process_current_token(t_parser *parser, t_ast *cmd_node, t_token *token)
+static int	process_current_token(t_parser *parser, t_ast *cmd_node,
+		t_token *token)
 {
 	if (is_redirection_token(token))
 		return (process_redirection_token(parser, cmd_node));

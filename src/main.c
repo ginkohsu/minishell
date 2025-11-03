@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+int			g_exit_status = 0; // initialize
+
 void	sig_handler(int signum)
 {
 	(void)signum;
@@ -32,7 +34,7 @@ static void	process_input(char *line)
 	t_ast	*tree;
 
 	if (!*line)
-		return;
+		return ;
 	add_history(line);
 	tree = parse(line);
 	if (tree)
@@ -42,14 +44,14 @@ static void	process_input(char *line)
 	}
 }
 
-int main(int ac, char **av, char **env)
+int	main(int ac, char **av, char **env)
 {
 	char	*line;
 
 	(void)ac;
 	(void)av;
 	signal(SIGINT, sig_handler);
-	signal(SIGQUIT,SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	initenv(env);
 	while (1)
 	{
