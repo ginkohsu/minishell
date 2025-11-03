@@ -22,7 +22,7 @@ static char	*expand_one_var(char **src)
 	if (ft_strcmp(name, "$") == 0)
 		return (name);
 	if (ft_strcmp(name, "?") == 0)
-		val = ft_itoa(g_exit_status);
+		val = getexitstr();
 	else
 	{
 		env = getenv(name);

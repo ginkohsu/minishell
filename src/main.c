@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-int	g_exit_status = 0; //initialize
-
 void	sig_handler(int signum)
 {
 	(void)signum;

@@ -19,9 +19,9 @@ static void	open_fail(char *file)
 	else if (errno == ENOSPC)
 		exittool(ERR_NO_SPACE, file, P_OBJ, 0);
 	else if (errno == ENOENT)
-		exittool(ERR_NO_FILE, file, P_OBJ, 126);
+		exittool(ERR_NO_FILE, file, P_OBJ, 1);
 	else if (errno == EISDIR)
-		exittool(ERR_IS_DIR, file, P_OBJ, 126);
+		exittool(ERR_IS_DIR, file, P_OBJ, 1);
 	else
 		exittool(ERR_OPEN_UNDEF, file, P_OBJ, 1);
 }
@@ -41,6 +41,10 @@ static void	exec_fail(char *file)
 // print error and exit with cleanup flags
 int	exittool(char *msg, void *obj, int action, unsigned char code)
 {
+	if (action & OPEN_FAIL)
+		open_fail(obj);
+	if (action & EXEC_FAIL)
+		exec_fail(obj);
 	if (msg && obj && (action & P_OBJ) && (action & STRERR))
 		ft_fprintf(2, msg, obj, strerror(errno));
 	else if (msg && (action & STRERR))
@@ -53,7 +57,7 @@ int	exittool(char *msg, void *obj, int action, unsigned char code)
 		free_ast_root();
 	if (action & F_ENV && (!(action & PPROC) || (action & TRUE_EXIT)))
 		initenv(NULL);
-	if (action & F_ARRAY)
+	if (action & F_ARR)
 		free_array((char **)obj);
 	if (obj && (action & F_OBJ))
 		free(obj);
@@ -61,9 +65,5 @@ int	exittool(char *msg, void *obj, int action, unsigned char code)
 		free(msg);
 	if ((action & STAY || action & PPROC) && !(action & TRUE_EXIT))
 		return (code);
-	if (action & OPEN_FAIL)
-		open_fail(obj);
-	if (action & EXEC_FAIL)
-		exec_fail(obj);
 	exit(code);
 }

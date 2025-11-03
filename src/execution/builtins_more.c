@@ -49,6 +49,7 @@ int	ft_env(char **av, int f)
 int	ft_export(char **av, int f)
 {
 	int		i;
+	int		status;
 	char	**array;
 
 	if (!av[1])
@@ -60,18 +61,18 @@ int	ft_export(char **av, int f)
 		i = -1;
 		while (array[++i])
 			ft_printf("declare -x %s\n", array[i]);
-		return (exittool(NULL, array, F_OBJ | F_AST | F_ENV | f, 0));
+		return (exittool(NULL, array, F_ARR | F_AST | F_ENV | f, 0));
 	}
+	status = 0;
 	i = 0;
 	while (av[++i])
 	{
-		if (is_valid_identifier(av[i]) && addenv(av[i]) == -1)
+		if (!is_valid_identifier(av[i]) && ++status)
+			ft_fprintf(2, ERR_EXPORT_INVALID, av[i]);
+		else if (addenv(av[i]) == -1)
 			return (exittool(ERR_ENV_CORRUPT, NULL, F_AST | F_ENV | f, 1));
-		else if (!is_valid_identifier(av[i]))
-			ft_fprintf(2, "minishell: export: `%s': not a valid identifier\n",
-				av[i]);
 	}
-	return (exittool(NULL, NULL, F_AST | F_ENV | f, 0));
+	return (exittool(NULL, NULL, F_AST | F_ENV | f, (bool)status));
 }
 
 // remove variables from environment

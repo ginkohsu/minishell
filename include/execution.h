@@ -56,7 +56,7 @@ enum		e_error_action
 	P_OBJ = 1 << 1,
 	F_OBJ = 1 << 2,
 	F_MSG = 1 << 3,
-	F_ARRAY = 1 << 4,
+	F_ARR = 1 << 4,
 	F_ARENA = 1 << 5,
 	F_AST = 1 << 6,
 	STRERR = 1 << 7,
@@ -75,11 +75,11 @@ enum		e_error_action
 # define ERR_FORK "fork failed"
 # define ERR_EXECVE "execve failed"
 # define ERR_OPEN "open: %s"
-# define ERR_PERM_DENIED "%s: permission denied\n"
+# define ERR_PERM_DENIED "%s: Permission denied\n"
 # define ERR_CMD_NOT_FOUND "%s: command not found\n"
-# define ERR_NO_SUCH_FILE "%s: no such file or directory\n"
+# define ERR_NO_SUCH_FILE "%s: No such file or directory\n"
 # define ERR_NOT_EXECUTABLE "%s: not executable\n"
-# define ERR_IS_DIR "%s: is a directory\n"
+# define ERR_IS_DIR "%s: Is a directory\n"
 # define ERR_CD_MANY_ARGS "minishell: cd: too many arguments\n"
 # define ERR_CD_HOME_UNSET "minishell: cd: HOME not set\n"
 # define ERR_CD_OLDPWD_UNSET "minishell: cd: OLDPWD not set\n"
@@ -87,9 +87,9 @@ enum		e_error_action
 # define ERR_CD_CWD "minishell: cd: cwd: %s\n"
 # define ERR_EXIT_MANY_ARGS "minishell: exit: too many arguments\n"
 # define ERR_EXIT_NUMERIC "minishell: exit: %s: numeric argument required\n"
-# define ERR_EXIT_OVERFLOW "minishell: exit: %s: overflow\n"
+# define ERR_EXPORT_INVALID "minishell: export: `%s': not a valid identifier\n"
 # define ERR_NO_SPACE "%s: no space left on device\n"
-# define ERR_NO_FILE "%s: no such file\n"
+# define ERR_NO_FILE "%s: No such file or directory\n"
 # define ERR_OPEN_UNDEF "%s: undefined error opening file\n"
 
 // execution entry

@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "execution.h"
-#include <unistd.h>
 
 // open file and dup to stdin/stdout
 static void	redirect(char *file, int oflag, int perms, int io)

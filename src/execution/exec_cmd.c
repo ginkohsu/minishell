@@ -105,10 +105,9 @@ static char	*get_path(char **prog)
 		}
 		return (ft_strdup(prog[0]));
 	}
+	ptr = NULL;
 	env = fetchenv("PATH");
-	if (!env)
-		ptr = NULL;
-	else
+	if (env)
 		ptr = env[0];
 	if (!ptr || ft_strlen(ptr) < 5 || ft_strncmp(ptr, "PATH=", 5) != 0
 		|| ft_strncmp(prog[0], "./", 2) == 0 || prog[0][0] == '/')
