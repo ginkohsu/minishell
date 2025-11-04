@@ -87,6 +87,14 @@ int	parent_builtin(t_command *cmd)
 	return (0);
 }
 
+static bool	is_path(char *prog)
+{
+	if (prog[0] == '/' || ft_strncmp(prog, "./", 2) == 0
+		|| ft_strncmp(prog, "../", 3) == 0)
+		return (1);
+	return (0);
+}
+
 static char	*get_path(char **prog)
 {
 	char	*ptr;
@@ -95,7 +103,7 @@ static char	*get_path(char **prog)
 
 	if (!prog[0] || prog[0][0] == '\0')
 		return (NULL);
-	if (access(prog[0], X_OK) == 0)
+	if (access(prog[0], X_OK && is_path(prog[0])) == 1)
 	{
 		dir = opendir(prog[0]);
 		if (dir)
@@ -110,7 +118,7 @@ static char	*get_path(char **prog)
 	if (env)
 		ptr = env[0];
 	if (!ptr || ft_strlen(ptr) < 5 || ft_strncmp(ptr, "PATH=", 5) != 0
-		|| ft_strncmp(prog[0], "./", 2) == 0 || prog[0][0] == '/')
+		|| is_path(prog[0]))
 		exittool(NULL, prog[0], F_AST | F_ENV | EXEC_FAIL, 0);
 	return (get_path2(prog, ptr));
 }

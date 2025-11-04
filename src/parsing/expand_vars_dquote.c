@@ -16,21 +16,14 @@ static char	*expand_one_var(char **src)
 {
 	char	*name;
 	char	*val;
-	char	*env;
 
 	name = handle_env_var(src);
 	if (ft_strcmp(name, "$") == 0)
 		return (name);
 	if (ft_strcmp(name, "?") == 0)
-		val = getexitstr();
+		val = getenvstr("?");
 	else
-	{
-		env = getenv(name);
-		if (env)
-			val = ft_strdup(env);
-		else
-			val = ft_strdup("");
-	}
+		val = getenvstr(name);
 	free(name);
 	return (val);
 }

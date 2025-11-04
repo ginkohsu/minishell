@@ -12,15 +12,15 @@
 
 #include "minishell.h"
 
-char	*expand_simple_env_var(char *var_name)
+char	*getenvstr(char *var)
 {
-	char	*value;
+	char	**env;
 
-	if (ft_strcmp(var_name, "?") == 0)
-		return (getexitstr());
-	value = getenv(var_name);
-	if (value)
-		return (ft_strdup(value));
+	env = fetchenv(var);
+	if (env && env[0])
+		return (ft_strdup(env[0] + ft_strlen(var) + 1));
+	if (var[0] == '?' && !var[1])
+		return (ft_strdup("0"));
 	return (ft_strdup(""));
 }
 
@@ -29,9 +29,9 @@ char	*expand_token_value_basic(t_token *token)
 	if (token->type == TOKEN_SQUOTE)
 		return (ft_strdup(token->value));
 	if (token->type == TOKEN_ENV_VAR)
-		return (expand_simple_env_var(token->value));
+		return (getenvstr(token->value));
 	else if (token->type == TOKEN_EXIT_STATUS)
-		return (expand_simple_env_var("?"));
+		return (getenvstr("?"));
 	else if (token->type == TOKEN_DQUOTE)
 		return (expand_vars_dquote(token->value));
 	else

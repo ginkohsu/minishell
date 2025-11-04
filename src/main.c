@@ -45,6 +45,7 @@ static void	process_input(char *line)
 int	main(int ac, char **av, char **env)
 {
 	char	*line;
+	int		code;
 
 	(void)ac;
 	(void)av;
@@ -62,7 +63,9 @@ int	main(int ac, char **av, char **env)
 		process_input(line);
 		free(line);
 	}
-	line = getexitstr();
+	line = getenvstr("?");
+	code = ft_atoi(line);
+	free(line);
 	initenv(NULL);
-	return (ft_atoi(line));
+	return (code);
 }

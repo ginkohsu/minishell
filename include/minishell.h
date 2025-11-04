@@ -55,10 +55,9 @@ int			is_terminating_token(t_token *token);
 int			is_string_token(t_token *token);
 t_ast		*create_command_node(void);
 t_ast		*create_pipe_node(t_ast *left, t_ast *right);
-char		*expand_simple_env_var(char *var_name);
 char		*expand_token_value_basic(t_token *token);
 char		*expand_vars_dquote(char *src);
-char		*getexitstr(void);
+char		*getenvstr(char *var);
 
 t_ast		*parse_pipeline(t_parser *parser);
 t_ast		*parse_command(t_parser *parser);
