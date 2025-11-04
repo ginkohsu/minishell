@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/17 17:06:13 by jinxu             #+#    #+#             */
-/*   Updated: 2025/11/03 01:07:01 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/04 21:09:53 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,6 @@ void	sig_handler(int signum)
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-}
-
-static void	cleanup_and_exit(void)
-{
-	clear_history();
-	initenv(NULL);
 }
 
 static void	process_input(char *line)
@@ -45,6 +39,7 @@ static void	process_input(char *line)
 int	main(int ac, char **av, char **env)
 {
 	char	*line;
+	char	*exit_status;
 	int		code;
 
 	(void)ac;
@@ -57,15 +52,16 @@ int	main(int ac, char **av, char **env)
 		line = readline("minishell$ ");
 		if (!line)
 		{
-			cleanup_and_exit();
+			printf("exit\n");
 			break ;
 		}
 		process_input(line);
 		free(line);
 	}
-	line = getenvstr("?");
-	code = ft_atoi(line);
-	free(line);
+	exit_status = getenvstr("?");
+	code = ft_atoi(exit_status);
+	free(exit_status);
+	clear_history();
 	initenv(NULL);
 	return (code);
 }
