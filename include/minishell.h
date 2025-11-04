@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 16:55:04 by jinxu             #+#    #+#             */
-/*   Updated: 2025/11/03 02:00:29 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/04 19:29:40 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef MINISHELL_H
@@ -19,8 +19,6 @@
 # include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
-
-extern int	g_exit_status;
 
 # define MAX_TOKENS 1000
 
@@ -59,6 +57,7 @@ t_ast		*create_pipe_node(t_ast *left, t_ast *right);
 char		*expand_simple_env_var(char *var_name);
 char		*expand_token_value_basic(t_token *token);
 char		*expand_vars_dquote(char *src);
+char		*getexitstr(void);
 
 t_ast		*parse_pipeline(t_parser *parser);
 t_ast		*parse_command(t_parser *parser);
