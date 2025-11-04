@@ -50,6 +50,14 @@ void	handle_env_var_char(char **input, t_token *collected_tokens, int *count)
 {
 	char	*var_name;
 
+	if ((*input)[1] == '\0')
+	{
+		collected_tokens[*count].type = TOKEN_WORD;
+		collected_tokens[*count].value = ft_strdup("$");
+		(*count)++;
+		(*input)++;
+		return ;
+	}
 	var_name = handle_env_var(input);
 	if (var_name)
 	{
