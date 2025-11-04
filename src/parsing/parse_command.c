@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 19:19:09 by jinxu             #+#    #+#             */
-/*   Updated: 2025/11/03 00:06:06 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/04 20:53:11 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,11 @@ static int	process_argument_token(t_parser *parser, t_ast *cmd_node)
 	if (!arg)
 		arg = ft_strdup("");
 	parser_consume(parser);
+	if (arg && *arg == '\0')
+	{
+		free(arg);
+		return (1);
+	}
 	arg = merge_adjacent_tokens(parser, arg, token);
 	if (!arg)
 	{
@@ -102,7 +107,7 @@ t_ast	*parse_command(t_parser *parser)
 	if ((!cmd_node->cmd.argv || !cmd_node->cmd.argv[0])
 		&& !cmd_node->cmd.redirs)
 	{
-		printf("syntax error: empty command\n");
+//		printf("syntax error: empty command\n");
 		free_ast(cmd_node);
 		return (NULL);
 	}
