@@ -71,7 +71,7 @@ int	ft_exit(char **av, int f)
 {
 	int	i;
 
-	write(2, "exit\n", 5);
+	write(1, "exit\n", 5);
 	if (!av[1])
 		return (exittool(NULL, NULL, F_AST | F_ENV | TRUE_EXIT | f, 0));
 	if (av[1] && av[2])
@@ -79,8 +79,7 @@ int	ft_exit(char **av, int f)
 	i = 0;
 	if (av[1][i] == '+' || av[1][i] == '-')
 		i++;
-	while (av[1][i] && i)
-		if (!ft_isdigit(av[1][i++]))
+	while (av[1][i] && !ft_isdigit(av[1][i++]))
 			return (exittool(ERR_EXIT_NUMERIC, av[1],
 					P_OBJ | F_AST | F_ENV | TRUE_EXIT | f, 2));
 	errno = 0;

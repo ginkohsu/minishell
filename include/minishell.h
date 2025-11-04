@@ -19,6 +19,7 @@
 # include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <dirent.h>
 
 # define MAX_TOKENS 1000
 

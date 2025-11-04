@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-int			g_exit_status = 0; // initialize
-
 void	sig_handler(int signum)
 {
 	(void)signum;
@@ -64,5 +62,7 @@ int	main(int ac, char **av, char **env)
 		process_input(line);
 		free(line);
 	}
-	return (g_exit_status);
+	line = getexitstr();
+	initenv(NULL);
+	return (ft_atoi(line));
 }
