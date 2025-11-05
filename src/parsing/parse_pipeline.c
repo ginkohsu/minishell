@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 15:41:59 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/26 21:19:29 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/06 00:15:22 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,32 @@ static int	check_redirect_syntax(t_parser *parser)
 	return (0);
 }
 
+static int	check_pipe_syntax(t_parser *parser)
+{
+	int	i;
+
+	i = 0;
+	if (parser->token_count > 0 && parser->tokens[0].type == TOKEN_PIPE)
+	{
+		printf("syntax error near unexpected token `|'\n");
+		return (1);
+	}
+	while (i < parser->token_count)
+	{
+		if (parser->tokens[i].type == TOKEN_PIPE)
+		{
+			if ((i == parser->token_count - 1) || (i + 1 < parser->token_count
+					&& parser->tokens[i + 1].type == TOKEN_PIPE))
+			{
+				printf("syntax error near unexpected token `|'\n");
+				return (1);
+			}
+		}
+		i++;
+	}
+	return (0);
+}
+
 static t_ast	*handle_pipe_expression(t_parser *parser, t_ast *left)
 {
 	t_ast	*right;
@@ -59,6 +85,8 @@ t_ast	*parse_pipeline(t_parser *parser)
 	t_ast	*left;
 	t_token	*token;
 
+	if (check_pipe_syntax(parser))
+		return (NULL);
 	if (check_redirect_syntax(parser))
 		return (NULL);
 	left = parse_command(parser);
