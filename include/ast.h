@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 11:15:02 by jinxu             #+#    #+#             */
-/*   Updated: 2025/11/03 01:59:51 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/05 00:35:17 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ typedef struct s_redir
 {
 	t_token_type			type;
 	char					*filename;
+	int						quoted;
 	struct s_redir			*next;
 }							t_redir;
 
