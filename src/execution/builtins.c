@@ -80,14 +80,15 @@ int	ft_exit(char **av, int f)
 	if (av[1][i] == '+' || av[1][i] == '-')
 		i++;
 	while (av[1][i] && !ft_isdigit(av[1][i++]))
-			return (exittool(ERR_EXIT_NUMERIC, av[1],
-					P_OBJ | F_AST | F_ENV | TRUE_EXIT | f, 2));
+		return (exittool(ERR_EXIT_NUMERIC, av[1],
+				P_OBJ | F_AST | F_ENV | TRUE_EXIT | f, 2));
 	errno = 0;
 	i = ft_atoi(av[1]);
 	if (errno == ERANGE)
 		return (exittool(ERR_EXIT_NUMERIC, av[1],
 				P_OBJ | F_AST | F_ENV | TRUE_EXIT | f, 2));
-	return (exittool(NULL, NULL, F_AST | F_ENV | TRUE_EXIT | f, (unsigned char)i));
+	return (exittool(NULL, NULL, F_AST | F_ENV | TRUE_EXIT | f,
+			(unsigned char)i));
 }
 
 // print arguments to stdout

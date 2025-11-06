@@ -22,13 +22,16 @@ void	execute_ast(t_ast *ast)
 {
 	t_pipe_ctx	ctx;
 	int			total;
+	char		*tmp;
 
 	if (!ast || (ast->type == CMD && (!ast->cmd.argv || !ast->cmd.argv[0])))
 		return ;
 	if (ast->type == CMD && is_builtin(ast->cmd.argv[0]) && !ast->cmd.redirs)
 	{
-		if (addenv(ft_strprep("?=", ft_itoa(parent_builtin(&ast->cmd)))) == -1)
-			exittool(ERR_ENV_CORRUPT, NULL, 0, 1);
+		tmp = ft_strprep("?=", ft_itoa(parent_builtin(&ast->cmd)));
+		if (addenv(tmp) == -1)
+			exittool(ERR_ENV_CORRUPT, tmp, F_OBJ, 1);
+		free(tmp);
 		return ;
 	}
 	free_ast_root();
@@ -36,7 +39,10 @@ void	execute_ast(t_ast *ast)
 	total = count_ast_commands(ast);
 	ctx.pid = malloc(total * sizeof(int));
 	if (!ctx.pid)
+	{
+		free_ast(ast);
 		return ;
+	}
 	ctx.index = 0;
 	recursive_exec(ast, &ctx, total);
 	wait_for_children(ctx.pid, total);

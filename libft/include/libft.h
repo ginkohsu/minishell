@@ -94,6 +94,7 @@ int		ft_tolower(int c);
 int		ft_toupper(int c);
 int		ft_atoi(const char *nptr);
 char	*ft_itoa(int n);
+char	*ft_itoa_base(unsigned long n, char *base);
 char	*ft_strdup(const char *s);
 void	*ft_calloc(size_t nmemb, size_t size);
 char	*ft_strmapi(const char *s, char (*f)(unsigned int, char));

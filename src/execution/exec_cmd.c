@@ -18,9 +18,10 @@ static char	*get_path2(char **prog, char *ptr);
 // wait for all child processes and set exit status
 void	wait_for_children(int *pid, int total)
 {
-	int	i;
-	int	status;
-	int	last_status;
+	int		i;
+	int		status;
+	int		last_status;
+	char	*ptr;
 
 	i = -1;
 	while (++i < total - 1)
@@ -34,8 +35,10 @@ void	wait_for_children(int *pid, int total)
 		status = 128 + WTERMSIG(last_status);
 	else
 		status = 1;
-	if (addenv(ft_strprep("?=", ft_itoa(status))) == -1)
-		exittool(ERR_ENV_CORRUPT, NULL, F_AST, 1);
+	ptr = ft_strprep("?=", ft_itoa(status));
+	if (addenv(ptr) == -1)
+		exittool(ERR_ENV_CORRUPT, ptr, F_OBJ | F_AST, 1);
+	free(ptr);
 }
 
 // execute command (builtin or external)
@@ -89,8 +92,8 @@ int	parent_builtin(t_command *cmd)
 
 static bool	is_path(char *prog)
 {
-	if (prog[0] == '/' || ft_strncmp(prog, "./", 2) == 0
-		|| ft_strncmp(prog, "../", 3) == 0)
+	if (prog[0] == '/' || ft_strncmp(prog, "./", 2) == 0 || ft_strncmp(prog,
+			"../", 3) == 0)
 		return (1);
 	return (0);
 }

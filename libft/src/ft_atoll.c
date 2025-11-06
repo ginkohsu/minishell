@@ -14,8 +14,8 @@
 
 long long	ft_atoll(const char *str)
 {
-	short	i;
-	short	pm;
+	short		i;
+	short		pm;
 	long long	llong;
 
 	if (!ft_strncmp(str, "-9223372036854775807", 20))

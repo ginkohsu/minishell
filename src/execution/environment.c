@@ -53,7 +53,11 @@ int	initenv(char **src_env)
 	len = arrlen(src_env);
 	g_table->env = arrndup(src_env, len);
 	if (!g_table->env)
+	{
+		free(g_table);
+		g_table = NULL;
 		return (-1);
+	}
 	g_table->size = len;
 	return (0);
 }

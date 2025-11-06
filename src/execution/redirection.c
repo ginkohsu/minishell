@@ -11,6 +11,9 @@
 /* ************************************************************************** */
 
 #include "execution.h"
+#include "minishell.h"
+
+static const char	*g_hex_digits = "0123456789abcdef";
 
 // open file and dup to stdin/stdout
 static void	redirect(char *file, int oflag, int perms, int io)
@@ -28,30 +31,82 @@ static void	redirect(char *file, int oflag, int perms, int io)
 	safe_close(&fd);
 }
 
+// generate unique heredoc filename with urandom suffix
+static char	*gen_heredoc_name(void)
+{
+	int		fd;
+	char	buf[8];
+	char	*name;
+	char	suffix[18];
+	int		i;
+
+	name = ft_strdup("/tmp/minishell_heredoc");
+	if (!name)
+		return (NULL);
+	fd = open("/dev/urandom", O_RDONLY);
+	if (fd == -1 || read(fd, buf, 8) != 8)
+	{
+		safe_close(&fd);
+		return (name);
+	}
+	safe_close(&fd);
+	suffix[0] = '_';
+	suffix[17] = '\0';
+	i = -1;
+	while (++i < 8)
+	{
+		suffix[1 + i * 2] = g_hex_digits[(unsigned char)buf[i] >> 4];
+		suffix[2 + i * 2] = g_hex_digits[(unsigned char)buf[i] & 0xf];
+	}
+	return (ft_strapp(name, suffix));
+}
+
+// write one line to heredoc file, return false if delimiter reached
+static bool	writing(int fd, t_redir *redir, char **input)
+{
+	char	*expanded;
+	int		len;
+
+	*input = get_next_line(STDIN_FILENO);
+	len = ft_strlen(redir->filename);
+	if (!*input || (ft_strncmp(redir->filename, *input, len) == 0
+			&& (*input)[len] == '\n'))
+		return (false);
+	if (!redir->quoted)
+	{
+		expanded = expand_vars_dquote(*input);
+		if (expanded)
+		{
+			free(*input);
+			*input = expanded;
+		}
+	}
+	write(fd, *input, ft_strlen(*input));
+	free(*input);
+	return (true);
+}
+
 // read heredoc input until delimiter
-static bool	heredoc(char *delimiter)
+static bool	heredoc(t_redir *redir)
 {
 	int		tmp;
-	int		len;
 	char	*input;
+	char	*filename;
 
-	tmp = open("/tmp/minishell_heredoc", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	filename = gen_heredoc_name();
+	if (!filename)
+		exittool(ERR_MALLOC, NULL, F_AST | F_ENV | STRERR, 1);
+	tmp = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (tmp == -1)
-		exittool(ERR_OPEN, NULL, F_AST | F_ENV | STRERR, 1);
-	len = ft_strlen(delimiter);
-	while (1)
-	{
-		input = get_next_line(STDIN_FILENO);
-		if (!input || (ft_strncmp(delimiter, input, len) == 0
-				&& input[len] == '\n'))
-			break ;
-		write(tmp, input, ft_strlen(input));
-		free(input);
-	}
+		exittool(ERR_OPEN, filename, F_AST | F_ENV | F_OBJ | STRERR, 1);
+	while (writing(tmp, redir, &input))
+		;
 	safe_close(&tmp);
 	if (input)
 		free(input);
-	redirect("/tmp/minishell_heredoc", O_RDONLY, 0, STDIN_FILENO);
+	redirect(filename, O_RDONLY, 0, STDIN_FILENO);
+	unlink(filename);
+	free(filename);
 	return (true);
 }
 
@@ -61,7 +116,7 @@ void	setup_redirections(t_redir *redirs)
 	while (redirs)
 	{
 		if (redirs->type == TOKEN_HEREDOC)
-			heredoc(redirs->filename);
+			heredoc(redirs);
 		else if (redirs->type == TOKEN_REDIR_IN)
 			redirect(redirs->filename, O_RDONLY, 0, STDIN_FILENO);
 		else if (redirs->type == TOKEN_REDIR_OUT)
