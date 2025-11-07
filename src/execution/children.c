@@ -17,6 +17,8 @@ void	only_child(t_command *cmd, int fd[3][2])
 {
 	(void)fd;
 	setup_redirections(cmd->redirs);
+	if (!cmd->argv || !cmd->argv[0])
+		exittool(NULL, NULL, F_AST | F_ENV, 0);
 	execute_command(cmd);
 }
 
@@ -32,6 +34,8 @@ void	first_child(t_command *cmd, int fd[3][2])
 	safe_close(&fd[NEXT][WRITE]);
 	safe_close(&fd[NEXT][READ]);
 	setup_redirections(cmd->redirs);
+	if (!cmd->argv || !cmd->argv[0])
+		exittool(NULL, NULL, F_AST | F_ENV, 0);
 	execute_command(cmd);
 }
 
@@ -46,6 +50,8 @@ void	last_child(t_command *cmd, int fd[3][2])
 	}
 	safe_close(&fd[LAST][READ]);
 	setup_redirections(cmd->redirs);
+	if (!cmd->argv || !cmd->argv[0])
+		exittool(NULL, NULL, F_AST | F_ENV, 0);
 	execute_command(cmd);
 }
 
@@ -69,5 +75,7 @@ void	middle_child(t_command *cmd, int fd[3][2])
 	}
 	safe_close(&fd[NEXT][WRITE]);
 	setup_redirections(cmd->redirs);
+	if (!cmd->argv || !cmd->argv[0])
+		exittool(NULL, NULL, F_AST | F_ENV, 0);
 	execute_command(cmd);
 }

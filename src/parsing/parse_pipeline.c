@@ -84,11 +84,15 @@ t_ast	*parse_pipeline(t_parser *parser)
 {
 	t_ast	*left;
 	t_token	*token;
+	char	*tmp;
 
-	if (check_pipe_syntax(parser))
+	if (check_pipe_syntax(parser) || check_redirect_syntax(parser))
+	{
+		tmp = ft_strdup("?=2");
+		if (!tmp || addenv(tmp) == -1)
+			exittool(ERR_ENV_CORRUPT, tmp, F_OBJ, 1);
 		return (NULL);
-	if (check_redirect_syntax(parser))
-		return (NULL);
+	}
 	left = parse_command(parser);
 	if (!left)
 		return (NULL);

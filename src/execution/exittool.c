@@ -54,7 +54,7 @@ int	exittool(char *msg, void *obj, int action, unsigned char code)
 	else if (msg)
 		ft_fprintf(2, msg);
 	if (action & F_AST && (!(action & PPROC) || (action & TRUE_EXIT)))
-		free_ast_root();
+		ast_root(NULL);
 	if (action & F_ENV && (!(action & PPROC) || (action & TRUE_EXIT)))
 		initenv(NULL);
 	if (action & F_ARR)
@@ -67,3 +67,5 @@ int	exittool(char *msg, void *obj, int action, unsigned char code)
 		return (code);
 	exit(code);
 }
+
+// int tool()

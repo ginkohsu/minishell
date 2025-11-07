@@ -106,7 +106,7 @@ static char	*get_path(char **prog)
 
 	if (!prog[0] || prog[0][0] == '\0')
 		return (NULL);
-	if (access(prog[0], X_OK && is_path(prog[0])) == 1)
+	if (access(prog[0], X_OK) && is_path(prog[0]) == 1)
 	{
 		dir = opendir(prog[0]);
 		if (dir)

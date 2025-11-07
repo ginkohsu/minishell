@@ -20,6 +20,8 @@ char	**fetchenv(char *key)
 	int	i;
 	int	len;
 
+	if (!g_table->env)
+		return (NULL);
 	if (!key)
 		return (g_table->env);
 	len = 0;
@@ -78,11 +80,13 @@ int	addenv(char *entry)
 		return (0);
 	}
 	new_env = arrndup(g_table->env, g_table->size + 1);
-	if (!new_env)
+	if (new_env)
+		new_env[g_table->size] = ft_strdup(entry);
+	if (!new_env || !new_env[g_table->size])
+	{
+		free_array(new_env);
 		return (-1);
-	new_env[g_table->size] = ft_strdup(entry);
-	if (!new_env[g_table->size])
-		return (-1);
+	}
 	new_env[g_table->size + 1] = NULL;
 	if (initenv(new_env) == -1)
 		return (-1);

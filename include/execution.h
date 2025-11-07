@@ -31,6 +31,7 @@ typedef struct s_pipe_ctx
 	int		*pid;
 	int		fd[3][2];
 	int		index;
+	int		total;
 }			t_pipe_ctx;
 
 // env table
@@ -92,9 +93,12 @@ enum		e_error_action
 # define ERR_NO_FILE "%s: No such file or directory\n"
 # define ERR_OPEN_UNDEF "%s: undefined error opening file\n"
 
+# define ERR_SYNTAX "syntax error near unexpected token '%s'\n"
+# define ERR_SYNTAX_NEAR "syntax error near unexpected token 'newline'\n"
+
 // execution entry
 void		execute_ast(t_ast *ast);
-void		free_ast_root(void);
+void		ast_root(t_ast *ast);
 
 // child process type splitting
 void		only_child(t_command *cmd, int fd[3][2]);
