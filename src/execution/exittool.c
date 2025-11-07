@@ -67,5 +67,3 @@ int	exittool(char *msg, void *obj, int action, unsigned char code)
 		return (code);
 	exit(code);
 }
-
-// int tool()

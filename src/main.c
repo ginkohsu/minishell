@@ -30,10 +30,7 @@ static void	process_input(char *line)
 	add_history(line);
 	tree = parse(line);
 	if (tree)
-	{
 		execute_ast(tree);
-		free_ast(tree);
-	}
 }
 
 int	main(int ac, char **av, char **env)
