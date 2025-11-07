@@ -45,7 +45,7 @@ int	ft_cd(char **av, int f)
 	char	*path;
 
 	if (av[1] && av[2])
-		return (exittool(ERR_CD_MANY_ARGS, NULL, F_AST | F_ENV | f, 2));
+		return (exittool(ERR_CD_MANY_ARGS, NULL, F_AST | F_ENV | f, 1));
 	if (!av[1])
 	{
 		env = fetchenv("HOME");
@@ -75,7 +75,7 @@ int	ft_exit(char **av, int f)
 	if (!av[1])
 		return (exittool(NULL, NULL, F_AST | F_ENV | TRUE_EXIT | f, 0));
 	if (av[1] && av[2])
-		return (exittool(ERR_EXIT_MANY_ARGS, NULL, F_AST | f, 2));
+		return (exittool(ERR_EXIT_MANY_ARGS, NULL, F_AST | f, 1));
 	i = 0;
 	if (av[1][i] == '+' || av[1][i] == '-')
 		i++;
