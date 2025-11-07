@@ -21,6 +21,8 @@
 # include <stdlib.h>
 # include <dirent.h>
 
+extern volatile sig_atomic_t	g_signal;
+
 # define MAX_TOKENS 1000
 
 // tokenizing

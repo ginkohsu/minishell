@@ -16,6 +16,8 @@
 void	only_child(t_command *cmd, int fd[3][2])
 {
 	(void)fd;
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	setup_redirections(cmd->redirs);
 	if (!cmd->argv || !cmd->argv[0])
 		exittool(NULL, NULL, F_AST | F_ENV, 0);
@@ -25,6 +27,8 @@ void	only_child(t_command *cmd, int fd[3][2])
 // execute first command in pipeline
 void	first_child(t_command *cmd, int fd[3][2])
 {
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	if (dup2(fd[NEXT][WRITE], STDOUT_FILENO) == -1)
 	{
 		safe_close(&fd[NEXT][READ]);
@@ -42,6 +46,8 @@ void	first_child(t_command *cmd, int fd[3][2])
 // execute last command in pipeline
 void	last_child(t_command *cmd, int fd[3][2])
 {
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	safe_close(&fd[LAST][WRITE]);
 	if (dup2(fd[LAST][READ], STDIN_FILENO) == -1)
 	{
@@ -58,6 +64,8 @@ void	last_child(t_command *cmd, int fd[3][2])
 // execute middle command in pipeline
 void	middle_child(t_command *cmd, int fd[3][2])
 {
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	safe_close(&fd[LAST][WRITE]);
 	if (dup2(fd[LAST][READ], STDIN_FILENO) == -1)
 	{

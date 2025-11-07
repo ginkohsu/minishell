@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "execution.h"
 #include "minishell.h"
 
 static const char	*g_hex_digits = "0123456789abcdef";
@@ -87,7 +86,7 @@ static bool	writing(int fd, t_redir *redir, char **input)
 }
 
 // read heredoc input until delimiter
-static bool	heredoc(t_redir *redir)
+static void	heredoc(t_redir *redir)
 {
 	int		tmp;
 	char	*input;
@@ -99,15 +98,15 @@ static bool	heredoc(t_redir *redir)
 	tmp = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (tmp == -1)
 		exittool(ERR_OPEN, filename, F_AST | F_ENV | F_OBJ | STRERR, 1);
-	while (writing(tmp, redir, &input))
+	while (g_signal && writing(tmp, redir, &input))
 		;
 	safe_close(&tmp);
 	if (input)
 		free(input);
-	redirect(filename, O_RDONLY, 0, STDIN_FILENO);
+	if (g_signal)
+		redirect(filename, O_RDONLY, 0, STDIN_FILENO);
 	unlink(filename);
 	free(filename);
-	return (true);
 }
 
 // apply all redirections in linked list

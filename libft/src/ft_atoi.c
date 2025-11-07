@@ -20,6 +20,8 @@ int	ft_atoi(const char *str)
 	long long	integer;
 	int			ans;
 
+	if (!str)
+		return (0);
 	i = 0;
 	integer = 0;
 	pm = 1;

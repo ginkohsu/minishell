@@ -79,8 +79,9 @@ int	ft_exit(char **av, int f)
 	i = 0;
 	if (av[1][i] == '+' || av[1][i] == '-')
 		i++;
-	while (av[1][i] && !ft_isdigit(av[1][i++]))
-		return (exittool(ERR_EXIT_NUMERIC, av[1],
+	while (av[1][i])
+		if (!ft_isdigit(av[1][i++]))
+			return (exittool(ERR_EXIT_NUMERIC, av[1],
 				P_OBJ | F_AST | F_ENV | TRUE_EXIT | f, 2));
 	errno = 0;
 	i = ft_atoi(av[1]);
