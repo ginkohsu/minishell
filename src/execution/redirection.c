@@ -98,13 +98,12 @@ static void	heredoc(t_redir *redir)
 	tmp = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (tmp == -1)
 		exittool(ERR_OPEN, filename, F_AST | F_ENV | F_OBJ | STRERR, 1);
-	while (g_signal && writing(tmp, redir, &input))
+	while (writing(tmp, redir, &input))
 		;
 	safe_close(&tmp);
 	if (input)
 		free(input);
-	if (g_signal)
-		redirect(filename, O_RDONLY, 0, STDIN_FILENO);
+	redirect(filename, O_RDONLY, 0, STDIN_FILENO);
 	unlink(filename);
 	free(filename);
 }

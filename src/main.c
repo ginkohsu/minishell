@@ -12,10 +12,14 @@
 
 #include "minishell.h"
 
+static const char		*g_sig_fail_str = "?=130";
+volatile sig_atomic_t	g_signal = 1;
+
 void	sig_handler(int signum)
 {
 	(void)signum;
-	printf("\n");
+	g_signal = 0;
+	write(STDOUT_FILENO, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
@@ -53,9 +57,17 @@ int	main(int ac, char **av, char **env)
 			write(1, "exit\n", 5);
 			break ;
 		}
+		if (g_signal == 0)
+		{
+			exit_status = ft_strdup(g_sig_fail_str);
+			if (!exit_status || addenv(exit_status))
+				break ;
+		}
+		g_signal = 1;
 		process_input(line);
 	}
-	exit_status = getenvstr("?");
+	if (g_signal)
+		exit_status = getenvstr("?");
 	code = ft_atoi(exit_status);
 	free(exit_status);
 	clear_history();
