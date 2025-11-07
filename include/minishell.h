@@ -70,9 +70,4 @@ t_token		*copy_to_heap(t_token *collected, int count, int *token_count);
 char		*merge_adjacent_tokens(t_parser *parser, char *current_arg,
 				t_token *current_token);
 
-// for testing:
-void		print_ast(t_ast *ast, int depth);
-void		print_tokens_debug(t_token *tokens, int count);
-const char	*get_token_type_name(t_token_type type);
-const char	*get_node_type_name(t_node_type type);
 #endif

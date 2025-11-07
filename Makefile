@@ -6,7 +6,7 @@ LIBFT := $(LIBFT_DIR)/libft.a
 INC := -I./include -I./libft/include -I.
 OBJ_DIR := obj
 
-SRCS := main.c ast_utils.c expand_utils.c expand_vars_dquote.c ast_printer.c \
+SRCS := main.c ast_utils.c expand_utils.c expand_vars_dquote.c \
 	free.c handle_env.c handle_quote.c handle_redir.c handle_word.c \
 	lexer.c parse_args.c parse_command.c parse_free.c parse_main.c \
 	parse_pipeline.c parse_redir.c parser_otherutils.c parser_utils.c utils.c \
