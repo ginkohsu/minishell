@@ -18,6 +18,8 @@ static char	*expand_one_var(char **src)
 	char	*val;
 
 	name = handle_env_var(src);
+	if (!name)
+		return (NULL);
 	if (ft_strcmp(name, "$") == 0)
 		return (name);
 	if (ft_strcmp(name, "?") == 0)

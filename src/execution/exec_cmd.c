@@ -92,10 +92,8 @@ int	parent_builtin(t_command *cmd)
 
 static bool	is_path(char *prog)
 {
-	if (prog[0] == '/' || ft_strncmp(prog, "./", 2) == 0 || ft_strncmp(prog,
-			"../", 3) == 0)
-		return (1);
-	return (0);
+	return (prog[0] == '/' || ft_strncmp(prog, "./", 2) == 0 || ft_strncmp(prog,
+			"../", 3) == 0);
 }
 
 static char	*get_path(char **prog)
@@ -106,7 +104,7 @@ static char	*get_path(char **prog)
 
 	if (!prog[0] || prog[0][0] == '\0')
 		return (NULL);
-	if (access(prog[0], X_OK) && is_path(prog[0]) == 1)
+	if (is_path(prog[0]))
 	{
 		dir = opendir(prog[0]);
 		if (dir)
@@ -114,14 +112,15 @@ static char	*get_path(char **prog)
 			closedir(dir);
 			exittool(ERR_IS_DIR, prog[0], P_OBJ | F_AST | F_ENV, 126);
 		}
-		return (ft_strdup(prog[0]));
+		if (access(prog[0], X_OK) == 0)
+			return (ft_strdup(prog[0]));
+		exittool(NULL, prog[0], F_AST | F_ENV | EXEC_FAIL, 0);
 	}
 	ptr = NULL;
 	env = fetchenv("PATH");
 	if (env)
 		ptr = env[0];
-	if (!ptr || ft_strlen(ptr) < 5 || ft_strncmp(ptr, "PATH=", 5) != 0
-		|| is_path(prog[0]))
+	if (!ptr || ft_strlen(ptr) < 5 || ft_strncmp(ptr, "PATH=", 5) != 0)
 		exittool(NULL, prog[0], F_AST | F_ENV | EXEC_FAIL, 0);
 	return (get_path2(prog, ptr));
 }

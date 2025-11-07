@@ -56,3 +56,5 @@ dkms.conf
 
 # test directory
 minishell_tester/
+compile_commands.json
+.cache/clangd/index

@@ -20,7 +20,7 @@ char	**fetchenv(char *key)
 	int	i;
 	int	len;
 
-	if (!g_table->env)
+	if ( !g_table || !g_table->env)
 		return (NULL);
 	if (!key)
 		return (g_table->env);

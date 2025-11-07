@@ -31,6 +31,7 @@ static void	process_input(char *line)
 	tree = parse(line);
 	if (tree)
 		execute_ast(tree);
+	free(line);
 }
 
 int	main(int ac, char **av, char **env)
@@ -49,11 +50,10 @@ int	main(int ac, char **av, char **env)
 		line = readline("minishell$ ");
 		if (!line)
 		{
-			printf("exit\n");
+			write(1, "exit\n", 5);
 			break ;
 		}
 		process_input(line);
-		free(line);
 	}
 	exit_status = getenvstr("?");
 	code = ft_atoi(exit_status);
