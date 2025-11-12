@@ -11,7 +11,7 @@ SRCS := main.c ast_utils.c expand_utils.c expand_vars_dquote.c \
 	lexer.c parse_args.c parse_command.c parse_free.c parse_main.c \
 	parse_pipeline.c parse_redir.c parser_otherutils.c parser_utils.c utils.c \
 	array_utils.c builtins.c builtins_more.c children.c environment.c exec_ast.c \
-	exec_cmd.c exec_utils.c exittool.c redirection.c
+	exec_cmd.c exec_utils.c exittool.c heredoc.c redirection.c
 
 OBJS := $(addprefix $(OBJ_DIR)/,$(SRCS:.c=.o))
 
