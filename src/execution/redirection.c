@@ -31,18 +31,14 @@ static void	redirect(char *file, int oflag, int perms, int io)
 // apply all redirections in linked list
 void	setup_redirections(t_redir *redirs)
 {
-	char	*heredoc_file;
-
-	heredoc_file = setup_heredocs(redirs);
-	if (heredoc_file)
-	{
-		redirect(heredoc_file, O_RDONLY, 0, STDIN_FILENO);
-		unlink(heredoc_file);
-		free(heredoc_file);
-	}
 	while (redirs)
 	{
-		if (redirs->type == TOKEN_REDIR_IN)
+		if (redirs->type == TOKEN_HEREDOC)
+		{
+			redirect(redirs->filename, O_RDONLY, 0, STDIN_FILENO);
+			unlink(redirs->filename);
+		}
+		else if (redirs->type == TOKEN_REDIR_IN)
 			redirect(redirs->filename, O_RDONLY, 0, STDIN_FILENO);
 		else if (redirs->type == TOKEN_REDIR_OUT)
 			redirect(redirs->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644,

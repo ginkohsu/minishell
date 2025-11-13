@@ -54,7 +54,7 @@ int			ft_pwd(char **av, int f);
 
 // redirs
 void		setup_redirections(t_redir *redirs);
-char		*setup_heredocs(t_redir *redirs);
+void		heredoc(t_redir *redirs);
 
 // env table management
 int			initenv(char **src_env);
@@ -64,9 +64,11 @@ int			rmenv(char *key);
 
 // utils
 void		free_array(char **array);
-int			count_ast_commands(t_ast *ast);
+int			preprocess(t_ast *ast);
 int			exittool(char *msg, void *obj, int action, unsigned char code);
 void		safe_close(int *fd);
+void		safe_free(void **ptr);
+bool		set_exit(int code);
 void		wait_for_children(int *pid, int total);
 
 // array utils

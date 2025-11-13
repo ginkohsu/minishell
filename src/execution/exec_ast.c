@@ -21,29 +21,27 @@ static void		cycle_pipes(t_pipe_ctx *ctx);
 void	execute_ast(t_ast *ast)
 {
 	t_pipe_ctx	ctx;
-	char		*tmp;
 
 	if (!ast || (ast->type == CMD && (!ast->cmd.argv || !ast->cmd.argv[0])))
 		return ;
+	ast_root(ast);
 	if (ast->type == CMD && is_builtin(ast->cmd.argv[0]) && !ast->cmd.redirs)
 	{
-		tmp = ft_strprep("?=", ft_itoa(parent_builtin(&ast->cmd)));
-		if (!tmp || addenv(tmp) == -1)
-			exittool(ERR_ENV_CORRUPT, tmp, F_OBJ, 1);
-		free(tmp);
+		if (!set_exit(parent_builtin(&ast->cmd)))
+			exittool(ERR_ENV_CORRUPT, NULL, F_AST, 1);
 		return ;
 	}
-	ast_root(ast);
-	ctx.total = count_ast_commands(ast);
-	ctx.pid = malloc(ctx.total * sizeof(int));
-	if (!ctx.pid)
+	ctx.total = preprocess(ast);
+	while (g_signal)
 	{
-		free_ast(ast);
-		return ;
+		ctx.pid = malloc(ctx.total * sizeof(int));
+		if (!ctx.pid)
+			break ;
+		ctx.index = 0;
+		recursive_exec(ast, &ctx);
+		wait_for_children(ctx.pid, ctx.total);
+		break ;
 	}
-	ctx.index = 0;
-	recursive_exec(ast, &ctx);
-	wait_for_children(ctx.pid, ctx.total);
 	ast_root(NULL);
 }
 
@@ -64,15 +62,18 @@ void	ast_root(t_ast *ast)
 	}
 }
 
-// recursively count total commands in ast
-int	count_ast_commands(t_ast *ast)
+// preprocess ast: count commands and process all heredocs
+int	preprocess(t_ast *ast)
 {
 	if (!ast)
 		return (0);
 	if (ast->type == CMD)
+	{
+		if (ast->cmd.redirs)
+			heredoc(ast->cmd.redirs);
 		return (1);
-	return (count_ast_commands(ast->s_pipe.left)
-		+ count_ast_commands(ast->s_pipe.right));
+	}
+	return (preprocess(ast->s_pipe.left) + preprocess(ast->s_pipe.right));
 }
 
 static void	recursive_exec(t_ast *ast, t_pipe_ctx *ctx)

@@ -6,49 +6,25 @@
 /*   By: aloimusa <aloimusa@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:04:00 by aloimusa          #+#    #+#             */
-/*   Updated: 2025/11/12 16:04:00 by aloimusa         ###   ########.fr       */
+/*   Updated: 2025/11/12 16:28:00 by aloimusa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static const char		*g_hex_digits = "0123456789abcdef";
-static struct sigaction	g_old_action;
+static const char		*g_hex = "0123456789abcdef";
+static struct sigaction	g_old_sa;
 
 extern volatile sig_atomic_t	g_signal;
 
-static void	heredoc_sigint_handler(int signum)
+static void	sighandler(int sig)
 {
-	(void)signum;
+	(void)sig;
 	g_signal = 0;
 	write(STDOUT_FILENO, "\n", 1);
 }
 
-static void	signal_setup(void)
-{
-	struct sigaction	action;
-
-	action.sa_handler = heredoc_sigint_handler;
-	sigemptyset(&action.sa_mask);
-	action.sa_flags = 0;
-	sigaction(SIGINT, &action, &g_old_action);
-}
-
-static void	signal_restore(void)
-{
-	sigaction(SIGINT, &g_old_action, NULL);
-}
-
-static void	cleanup(int *fd, char *filename)
-{
-	if (fd && *fd >= 0)
-		safe_close(fd);
-	if (filename)
-		unlink(filename);
-}
-
-// generate unique heredoc filename with urandom suffix
-static char	*gen_heredoc_name(void)
+static char	*make_tmpfile(void)
 {
 	int		fd;
 	char	buf[8];
@@ -71,90 +47,104 @@ static char	*gen_heredoc_name(void)
 	i = -1;
 	while (++i < 8)
 	{
-		suffix[1 + i * 2] = g_hex_digits[(unsigned char)buf[i] >> 4];
-		suffix[2 + i * 2] = g_hex_digits[(unsigned char)buf[i] & 0xf];
+		suffix[1 + i * 2] = g_hex[(unsigned char)buf[i] >> 4];
+		suffix[2 + i * 2] = g_hex[(unsigned char)buf[i] & 0xf];
 	}
 	return (ft_strapp(name, suffix));
 }
 
-// write one line to heredoc file, return false if delimiter reached
-static bool	writing(int fd, t_redir *redir, char **input)
+static bool	writing(int fd, t_redir *r, char **line)
 {
 	char	*expanded;
 	int		len;
 
-	*input = get_next_line(STDIN_FILENO);
-	len = ft_strlen(redir->filename);
-	if (!*input || (ft_strncmp(redir->filename, *input, len) == 0
-			&& (*input)[len] == '\n'))
+	*line = get_next_line(STDIN_FILENO);
+	len = ft_strlen(r->filename);
+	if (!*line || (ft_strncmp(r->filename, *line, len) == 0
+			&& (*line)[len] == '\n'))
 		return (false);
-	if (!redir->quoted)
+	if (!r->quoted)
 	{
-		expanded = expand_vars_dquote(*input);
+		expanded = expand_vars_dquote(*line);
 		if (expanded)
 		{
-			free(*input);
-			*input = expanded;
+			safe_free((void **)line);
+			*line = expanded;
 		}
 	}
-	write(fd, *input, ft_strlen(*input));
-	free(*input);
+	write(fd, *line, ft_strlen(*line));
+	safe_free((void **)line);
 	return (true);
 }
 
-// read heredoc input until delimiter, handle signal interruption
-static char	*process(t_redir *redir)
+static char	*write_file(t_redir *r)
 {
-	int		tmp;
-	char	*input;
-	char	*filename;
+	int		fd;
+	char	*line;
+	char	*file;
 
-	filename = gen_heredoc_name();
-	if (!filename)
-		exittool(ERR_MALLOC, NULL, F_AST | F_ENV | STRERR, 1);
-	tmp = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (tmp == -1)
-		exittool(ERR_OPEN, filename, F_AST | F_ENV | F_OBJ | STRERR, 1);
-	while (writing(tmp, redir, &input))
+	file = make_tmpfile();
+	if (!file)
+		return (NULL);
+	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd == -1)
+	{
+		safe_free((void **)&file);
+		return (NULL);
+	}
+	while (writing(fd, r, &line))
 	{
 		if (g_signal == 0)
 		{
-			cleanup(&tmp, filename);
-			free(filename);
-			signal_restore();
-			exittool(NULL, NULL, F_AST | F_ENV, 130);
+			safe_close(&fd);
+			unlink(file);
+			safe_free((void **)&file);
+			return (NULL);
 		}
 	}
-	safe_close(&tmp);
-	if (input)
-		free(input);
-	return (filename);
+	safe_close(&fd);
+	safe_free((void **)&line);
+	return (file);
 }
 
-// process all heredocs, return filename of last one
-char	*setup_heredocs(t_redir *redirs)
+static void	cleanup_heredocs(t_redir *start, t_redir *end)
 {
-	t_redir	*curr;
-	char	*last_file;
-	char	*new_file;
+	while (start && start != end)
+	{
+		if (start->type == TOKEN_HEREDOC && start->filename)
+			unlink(start->filename);
+		start = start->next;
+	}
+}
 
-	last_file = NULL;
+void	heredoc(t_redir *redirs)
+{
+	struct sigaction	sa;
+	t_redir				*curr;
+	char				*delim;
+	char				*file;
+
+	sa.sa_handler = sighandler;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+	sigaction(SIGINT, &sa, &g_old_sa);
 	curr = redirs;
-	signal_setup();
 	while (curr)
 	{
 		if (curr->type == TOKEN_HEREDOC)
 		{
-			new_file = process(curr);
-			if (last_file)
+			delim = curr->filename;
+			file = write_file(curr);
+			if (!file)
 			{
-				unlink(last_file);
-				free(last_file);
+				cleanup_heredocs(redirs, curr);
+				sigaction(SIGINT, &g_old_sa, NULL);
+				return ;
 			}
-			last_file = new_file;
+			safe_free((void **)&delim);
+			curr->filename = file;
 		}
 		curr = curr->next;
 	}
-	signal_restore();
-	return (last_file);
+	sigaction(SIGINT, &g_old_sa, NULL);
 }
