@@ -46,3 +46,28 @@ void	safe_close(int *fd)
 		*fd = -1;
 	}
 }
+
+// safely free a pointer (pass by reference)
+void	safe_free(void **ptr)
+{
+	if (ptr && *ptr)
+	{
+		free(*ptr);
+		*ptr = NULL;
+	}
+}
+
+// set exit status, returns false on env table corruption
+bool	set_exit(int code)
+{
+	char	*str;
+
+	str = ft_strprep("?=", ft_itoa(code));
+	if (!str || addenv(str) == -1)
+	{
+		safe_free((void **)&str);
+		return (false);
+	}
+	free(str);
+	return (true);
+}

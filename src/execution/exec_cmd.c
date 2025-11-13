@@ -21,7 +21,6 @@ void	wait_for_children(int *pid, int total)
 	int		i;
 	int		status;
 	int		last_status;
-	char	*ptr;
 
 	i = -1;
 	while (++i < total - 1)
@@ -35,10 +34,8 @@ void	wait_for_children(int *pid, int total)
 		status = 128 + WTERMSIG(last_status);
 	else
 		status = 1;
-	ptr = ft_strprep("?=", ft_itoa(status));
-	if (addenv(ptr) == -1)
-		exittool(ERR_ENV_CORRUPT, ptr, F_OBJ | F_AST, 1);
-	free(ptr);
+	if (!set_exit(status))
+		exittool(ERR_ENV_CORRUPT, NULL, F_AST, 1);
 }
 
 // execute command (builtin or external)
