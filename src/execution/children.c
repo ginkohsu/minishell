@@ -35,8 +35,8 @@ void	first_child(t_command *cmd, int fd[3][2])
 		safe_close(&fd[NEXT][WRITE]);
 		exittool(ERR_DUP2, NULL, F_AST | F_ENV | STRERR, 1);
 	}
-	safe_close(&fd[NEXT][WRITE]);
 	safe_close(&fd[NEXT][READ]);
+	safe_close(&fd[NEXT][WRITE]);
 	setup_redirections(cmd->redirs);
 	if (!cmd->argv || !cmd->argv[0])
 		exittool(NULL, NULL, F_AST | F_ENV, 0);

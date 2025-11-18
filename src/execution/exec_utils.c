@@ -61,6 +61,6 @@ bool	set_exit(int code)
 // check if program name is a path (absolute or relative)
 bool	is_path(char *prog)
 {
-	return (prog[0] == '/' || ft_strncmp(prog, "./", 2) == 0 || ft_strncmp(prog,
-			"../", 3) == 0);
+	return (prog[0] == '/' || prog[0] == '.' || ft_strncmp(prog, "./", 2) == 0
+		|| ft_strncmp(prog, "../", 3) == 0 || ft_strncmp(prog, "..", 2) == 0);
 }

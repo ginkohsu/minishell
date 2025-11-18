@@ -34,7 +34,6 @@ static void	process_input(char *line)
 	tree = parse(line);
 	if (tree)
 		execute_ast(tree);
-	free(line);
 }
 
 static bool	running(void)
@@ -50,11 +49,10 @@ static bool	running(void)
 	g_signal = 1;
 	process_input(line);
 	if (g_signal == 0)
-	{
 		if (!set_exit(130))
 			ft_fprintf(2, "malloc failed\n");
-		return (false);
-	}
+	if (line)
+		free(line);
 	return (true);
 }
 

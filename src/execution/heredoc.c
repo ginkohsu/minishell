@@ -49,6 +49,7 @@ static char	*write_file(t_redir *r)
 	char	*line;
 	char	*file;
 
+	line = NULL;
 	file = make_tmpfile();
 	if (!file)
 		return (NULL);
@@ -67,6 +68,7 @@ static char	*write_file(t_redir *r)
 		}
 	}
 	close(fd);
+	safe_free((void **)&line);
 	return (file);
 }
 

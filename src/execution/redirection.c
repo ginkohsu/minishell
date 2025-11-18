@@ -24,7 +24,10 @@ static void	redirect(char *file, int oflag, int perms, int io)
 	if (fd == -1)
 		exittool(NULL, file, F_AST | F_ENV | OPEN_FAIL, 0);
 	if (dup2(fd, io) == -1)
+	{
+		safe_close(&fd);
 		exittool(ERR_DUP2, NULL, F_AST | F_ENV | STRERR, 1);
+	}
 	safe_close(&fd);
 }
 
