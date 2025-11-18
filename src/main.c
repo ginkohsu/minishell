@@ -47,14 +47,14 @@ static bool	running(void)
 		write(1, "exit\n", 5);
 		return (false);
 	}
+	g_signal = 1;
+	process_input(line);
 	if (g_signal == 0)
 	{
 		if (!set_exit(130))
 			ft_fprintf(2, "malloc failed\n");
 		return (false);
 	}
-	g_signal = 1;
-	process_input(line);
 	return (true);
 }
 

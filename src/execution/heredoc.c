@@ -22,26 +22,24 @@ static void	sighandler(int sig)
 static bool	writing(int fd, t_redir *r, char **line)
 {
 	char	*expanded;
+	int		len;
 
-	*line = readline("");
-	if (!*line || ft_strcmp(r->filename, *line) == 0 || g_signal == 0)
-	{
-		if (*line)
-			free(*line);
+	*line = get_next_line(STDIN_FILENO);
+	len = ft_strlen(r->filename);
+	if (!*line || (ft_strncmp(r->filename, *line, len) == 0
+			&& (*line)[len] == '\n'))
 		return (false);
-	}
 	if (!r->quoted)
 	{
 		expanded = expand_vars_dquote(*line);
 		if (expanded)
 		{
-			free(*line);
+			safe_free((void **)line);
 			*line = expanded;
 		}
 	}
 	write(fd, *line, ft_strlen(*line));
-	write(fd, "\n", 1);
-	free(*line);
+	safe_free((void **)line);
 	return (true);
 }
 
