@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 19:53:48 by jinxu             #+#    #+#             */
-/*   Updated: 2025/11/06 00:44:20 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/18 22:49:21 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,10 @@ static int	validate_redir_syntax(t_parser *parser)
 	redir_token = parser_peek(parser, 0);
 	if (!redir_token || !is_redirection_token(redir_token))
 		return (0);
-	parser_consume(parser);
-	filename_token = parser_peek(parser, 0);
+	filename_token = parser_peek(parser, 1);
 	if (!filename_token || !is_string_token(filename_token))
 		return (0);
+	parser_consume(parser);
 	return (1);
 }
 
@@ -77,6 +77,7 @@ int	parse_redirection(t_parser *parser, t_command *cmd)
 	char	*filename;
 	int		quoted;
 
+	quoted = 0;
 	if (!validate_redir_syntax(parser))
 		return (PARSE_SYNTAX_ERROR);
 	redir_token = parser_peek(parser, -1);
