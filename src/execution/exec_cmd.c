@@ -15,29 +15,6 @@
 static char	*get_path(char **prog);
 static char	*get_path2(char **prog, char *ptr);
 
-// wait for all child processes and set exit status
-void	wait_for_children(int *pid, int total)
-{
-	int		i;
-	int		status;
-	int		last_status;
-
-	i = -1;
-	while (++i < total - 1)
-		waitpid(pid[i], &status, 0);
-	last_status = 0;
-	waitpid(pid[total - 1], &last_status, 0);
-	free(pid);
-	if (WIFEXITED(last_status))
-		status = WEXITSTATUS(last_status);
-	else if (WIFSIGNALED(last_status))
-		status = 128 + WTERMSIG(last_status);
-	else
-		status = 1;
-	if (!set_exit(status))
-		exittool(ERR_ENV_CORRUPT, NULL, F_AST, 1);
-}
-
 // execute command (builtin or external)
 void	execute_command(t_command *cmd)
 {
@@ -85,12 +62,6 @@ int	parent_builtin(t_command *cmd)
 	else if (ft_strcmp("exit", cmd->argv[0]) == 0)
 		return (ft_exit(cmd->argv, PPROC));
 	return (0);
-}
-
-static bool	is_path(char *prog)
-{
-	return (prog[0] == '/' || ft_strncmp(prog, "./", 2) == 0 || ft_strncmp(prog,
-			"../", 3) == 0);
 }
 
 static char	*get_path(char **prog)

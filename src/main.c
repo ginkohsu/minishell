@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-static const char		*g_sig_fail_str = "?=130";
 volatile sig_atomic_t	g_signal = 1;
 
 void	sig_handler(int signum)
@@ -38,10 +37,30 @@ static void	process_input(char *line)
 	free(line);
 }
 
-int	main(int ac, char **av, char **env)
+static bool	running(void)
 {
 	char	*line;
-	char	*exit_status;
+
+	line = readline("minishell$ ");
+	if (!line)
+	{
+		write(1, "exit\n", 5);
+		return (false);
+	}
+	if (g_signal == 0)
+	{
+		if (!set_exit(130))
+			ft_fprintf(2, "malloc failed\n");
+		return (false);
+	}
+	g_signal = 1;
+	process_input(line);
+	return (true);
+}
+
+int	main(int ac, char **av, char **env)
+{
+	char	*exit_str;
 	int		code;
 
 	(void)ac;
@@ -49,27 +68,11 @@ int	main(int ac, char **av, char **env)
 	signal(SIGINT, sig_handler);
 	signal(SIGQUIT, SIG_IGN);
 	initenv(env);
-	while (1)
-	{
-		line = readline("minishell$ ");
-		if (!line)
-		{
-			write(1, "exit\n", 5);
-			break ;
-		}
-		if (g_signal == 0)
-		{
-			exit_status = ft_strdup(g_sig_fail_str);
-			if (!exit_status || addenv(exit_status))
-				break ;
-		}
-		g_signal = 1;
-		process_input(line);
-	}
-	if (g_signal)
-		exit_status = getenvstr("?");
-	code = ft_atoi(exit_status);
-	free(exit_status);
+	while (running())
+		;
+	exit_str = getenvstr("?");
+	code = ft_atoi(exit_str);
+	free(exit_str);
 	clear_history();
 	initenv(NULL);
 	return (code);

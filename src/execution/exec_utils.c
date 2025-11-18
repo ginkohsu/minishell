@@ -23,20 +23,6 @@ int	is_builtin(char *name)
 		|| ft_strcmp(name, "exit") == 0);
 }
 
-// free null-terminated string array
-void	free_array(char **array)
-{
-	int	i;
-
-	if (!array)
-		return ;
-	i = -1;
-	while (array[++i])
-		free(array[i]);
-	free(array);
-	array = NULL;
-}
-
 // safely close a file descriptor (pass by reference)
 void	safe_close(int *fd)
 {
@@ -70,4 +56,11 @@ bool	set_exit(int code)
 	}
 	free(str);
 	return (true);
+}
+
+// check if program name is a path (absolute or relative)
+bool	is_path(char *prog)
+{
+	return (prog[0] == '/' || ft_strncmp(prog, "./", 2) == 0 || ft_strncmp(prog,
+			"../", 3) == 0);
 }

@@ -87,3 +87,26 @@ void	middle_child(t_command *cmd, int fd[3][2])
 		exittool(NULL, NULL, F_AST | F_ENV, 0);
 	execute_command(cmd);
 }
+
+// wait for all child processes and set exit status
+void	wait_for_children(int *pid, int total)
+{
+	int	i;
+	int	status;
+	int	last_status;
+
+	i = -1;
+	while (++i < total - 1)
+		waitpid(pid[i], &status, 0);
+	last_status = 0;
+	waitpid(pid[total - 1], &last_status, 0);
+	free(pid);
+	if (WIFEXITED(last_status))
+		status = WEXITSTATUS(last_status);
+	else if (WIFSIGNALED(last_status))
+		status = 128 + WTERMSIG(last_status);
+	else
+		status = 1;
+	if (!set_exit(status))
+		exittool(ERR_ENV_CORRUPT, NULL, F_AST, 1);
+}

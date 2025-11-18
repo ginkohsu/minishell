@@ -14,61 +14,66 @@
 
 # include "execution.h"
 # include "libft.h"
+# include <dirent.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
-# include <dirent.h>
-
 
 # define MAX_TOKENS 1000
 
+extern volatile sig_atomic_t	g_signal;
+
 // tokenizing
-void		skip_whitespace(char **input);
-int			ft_isspace(char c);
-int			is_only_whitespace(char *str);
-int			is_special_char(char c);
-int			check_unclosed_quote(char *input);
-char		*extract_word(char **input);
-void		handle_quote_char(char **input, t_token *collected_tokens,
-				int *count);
-void		handle_redirect_char(char **input, t_token *collected_tokens,
-				int *count);
-void		handle_single_special_char(char **input, t_token *collected_tokens,
-				int *count);
-void		handle_env_var_char(char **input, t_token *collected_tokens,
-				int *count);
-char		*handle_env_var(char **input);
+void							skip_whitespace(char **input);
+int								ft_isspace(char c);
+int								is_only_whitespace(char *str);
+int								is_special_char(char c);
+int								check_unclosed_quote(char *input);
+char							*extract_word(char **input);
+void							handle_quote_char(char **input,
+									t_token *collected_tokens, int *count);
+void							handle_redirect_char(char **input,
+									t_token *collected_tokens, int *count);
+void							handle_single_special_char(char **input,
+									t_token *collected_tokens, int *count);
+void							handle_env_var_char(char **input,
+									t_token *collected_tokens, int *count);
+char							*handle_env_var(char **input);
 
-t_token		*tokenize(char *input, int *token_count);
+t_token							*tokenize(char *input, int *token_count);
 
-void		free_tokens(t_token *tokens, int count);
-void		cleanup_stack_tokens(t_token *tokens, int count);
+void							free_tokens(t_token *tokens, int count);
+void							cleanup_stack_tokens(t_token *tokens,
+									int count);
 
 // parsing
-t_parser	parser_init(t_token *tokens, int count);
-t_token		*parser_peek(t_parser *parser, int offset);
-t_token		*parser_consume(t_parser *parser);
-int			parser_check(t_parser *parser, t_token_type type);
-int			is_redirection_token(t_token *token);
-int			is_terminating_token(t_token *token);
-int			is_string_token(t_token *token);
-t_ast		*create_command_node(void);
-t_ast		*create_pipe_node(t_ast *left, t_ast *right);
-char		*expand_token_value_basic(t_token *token);
-char		*expand_vars_dquote(char *src);
-char		*getenvstr(char *var);
+t_parser						parser_init(t_token *tokens, int count);
+t_token							*parser_peek(t_parser *parser, int offset);
+t_token							*parser_consume(t_parser *parser);
+int								parser_check(t_parser *parser,
+									t_token_type type);
+int								is_redirection_token(t_token *token);
+int								is_terminating_token(t_token *token);
+int								is_string_token(t_token *token);
+t_ast							*create_command_node(void);
+t_ast							*create_pipe_node(t_ast *left, t_ast *right);
+char							*expand_token_value_basic(t_token *token);
+char							*expand_vars_dquote(char *src);
+char							*getenvstr(char *var);
 
-t_ast		*parse_pipeline(t_parser *parser);
-t_ast		*parse_command(t_parser *parser);
-int			add_argument_to_cmd(t_command *cmd, char *arg);
-int			parse_redirection(t_parser *parser, t_command *cmd);
-t_ast		*parse(char *input);
-void		free_ast(t_ast *ast);
+t_ast							*parse_pipeline(t_parser *parser);
+t_ast							*parse_command(t_parser *parser);
+int								add_argument_to_cmd(t_command *cmd, char *arg);
+int								parse_redirection(t_parser *parser,
+									t_command *cmd);
+t_ast							*parse(char *input);
+void							free_ast(t_ast *ast);
 
-t_token		*copy_to_heap(t_token *collected, int count, int *token_count);
-char		*merge_adjacent_tokens(t_parser *parser, char *current_arg,
-				t_token *current_token);
+t_token							*copy_to_heap(t_token *collected, int count,
+									int *token_count);
+char							*merge_adjacent_tokens(t_parser *parser,
+									char *current_arg, t_token *current_token);
 
 #endif

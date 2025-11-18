@@ -88,18 +88,18 @@ typedef struct s_ast
 // pipex_bonus style multi-process file descriptor handling
 typedef struct s_pipe_ctx
 {
-	int		*pid;
-	int		fd[3][2];
-	int		index;
-	int		total;
-}			t_pipe_ctx;
+	int						*pid;
+	int						fd[3][2];
+	int						index;
+	int						total;
+}							t_pipe_ctx;
 
 // env table
 typedef struct s_table
 {
-	int		size;
-	char	**env;
-}			t_table;
+	int						size;
+	char					**env;
+}							t_table;
 
 // pipe_ctx fd[][] defines
 # define NEXT 0
@@ -111,7 +111,7 @@ typedef struct s_table
 # define OUTFILE 1
 
 // exittool action flags (bitwise flags for exittool)
-enum		e_error_action
+enum						e_error_action
 {
 	STAY = 1 << 0,
 	P_OBJ = 1 << 1,

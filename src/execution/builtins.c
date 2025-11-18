@@ -82,7 +82,7 @@ int	ft_exit(char **av, int f)
 	while (av[1][i])
 		if (!ft_isdigit(av[1][i++]))
 			return (exittool(ERR_EXIT_NUMERIC, av[1],
-				P_OBJ | F_AST | F_ENV | TRUE_EXIT | f, 2));
+					P_OBJ | F_AST | F_ENV | TRUE_EXIT | f, 2));
 	errno = 0;
 	i = ft_atoi(av[1]);
 	if (errno == ERANGE)

@@ -67,3 +67,17 @@ int	exittool(char *msg, void *obj, int action, unsigned char code)
 		return (code);
 	exit(code);
 }
+
+// free null-terminated string array
+void	free_array(char **array)
+{
+	int	i;
+
+	if (!array)
+		return ;
+	i = -1;
+	while (array[++i])
+		free(array[i]);
+	free(array);
+	array = NULL;
+}
