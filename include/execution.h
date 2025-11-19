@@ -70,8 +70,8 @@ bool	set_exit(int code);
 void	wait_for_children(int *pid, int total);
 bool	is_path(char *prog);
 
-//signal 
-void    setup_signal_handlers(void);
+// signal
+void	setup_signal_handlers(void);
 void	sig_handler(int signum);
 
 #endif

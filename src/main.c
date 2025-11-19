@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/17 17:06:13 by jinxu             #+#    #+#             */
-/*   Updated: 2025/11/19 20:46:43 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/19 21:42:20 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ static void	process_input(char *line)
 	if (tree)
 		execute_ast(tree);
 	free(line);
+	g_signal = 1;
 }
 
 static bool	running(void)
@@ -30,6 +31,7 @@ static bool	running(void)
 	char	*line;
 	char	*tmp;
 
+	g_signal = 1;
 	if (isatty(STDIN_FILENO))
 		line = readline("minishell$ ");
 	else

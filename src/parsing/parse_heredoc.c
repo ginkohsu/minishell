@@ -35,8 +35,7 @@ char	*handle_heredoc_filename(t_token *filename, int *quoted)
 {
 	char	*str;
 
-	if (filename->type == TOKEN_DQUOTE
-		|| filename->type == TOKEN_SQUOTE)
+	if (filename->type == TOKEN_DQUOTE || filename->type == TOKEN_SQUOTE)
 	{
 		*quoted = 1;
 		str = ft_strdup(filename->value);
