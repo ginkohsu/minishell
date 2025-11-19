@@ -74,17 +74,34 @@ static void	shlvlup(void)
 			free(str);
 }
 
+static int	handle_c_flag(char *cmd)
+{
+	t_ast	*tree;
+	char	*exit_str;
+	int		code;
+
+	tree = parse(cmd);
+	if (tree)
+		execute_ast(tree);
+	exit_str = getenvstr("?");
+	code = ft_atoi(exit_str);
+	free(exit_str);
+	clear_history();
+	initenv(NULL);
+	return (code);
+}
+
 int	main(int ac, char **av, char **env)
 {
 	char	*exit_str;
 	int		code;
 
-	(void)ac;
-	(void)av;
 	signal(SIGINT, sig_handler);
 	signal(SIGQUIT, SIG_IGN);
 	initenv(env);
 	shlvlup();
+	if (ac >= 3 && !ft_strncmp(av[1], "-c", 3))
+		return (handle_c_flag(av[2]));
 	while (running())
 		;
 	exit_str = getenvstr("?");

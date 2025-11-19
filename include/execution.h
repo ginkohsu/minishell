@@ -62,7 +62,6 @@ int		addenv(char *entry);
 int		rmenv(char *key);
 
 // utils
-void	free_array(char **array);
 int		preprocess(t_ast *ast);
 int		exittool(char *msg, void *obj, int action, unsigned char code);
 void	safe_close(int *fd);
@@ -70,14 +69,5 @@ void	safe_free(void **ptr);
 bool	set_exit(int code);
 void	wait_for_children(int *pid, int total);
 bool	is_path(char *prog);
-
-// array utils
-int		arrlen(char **arr);
-int		arrlcpy(char **dst, char **src, int dstsize);
-char	**arrdup(char **src);
-char	**arrndup(char **src, int n);
-int		arrstr(char **arr, char *str);
-int		arrstrn(char **arr, char *str, int n);
-void	arrsort(char **arr);
 
 #endif
