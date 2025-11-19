@@ -40,8 +40,18 @@ static void	process_input(char *line)
 static bool	running(void)
 {
 	char	*line;
+	char	*tmp;
 
-	line = readline("minishell$ ");
+	if (isatty(STDIN_FILENO))
+		line = readline("minishell$ ");
+	else
+	{
+		tmp = get_next_line(STDIN_FILENO);
+		if (!tmp)
+			return (false);
+		line = ft_strtrim(tmp, "\n");
+		free(tmp);
+	}
 	if (!line)
 	{
 		write(1, "exit\n", 5);
@@ -49,12 +59,6 @@ static bool	running(void)
 	}
 	g_signal = 1;
 	process_input(line);
-	if (g_signal == 0)
-	{
-		if (!set_exit(130))
-			ft_fprintf(2, "malloc failed\n");
-		return (false);
-	}
 	return (true);
 }
 
@@ -103,7 +107,14 @@ int	main(int ac, char **av, char **env)
 	if (ac >= 3 && !ft_strncmp(av[1], "-c", 3))
 		return (handle_c_flag(av[2]));
 	while (running())
-		;
+	{
+		if (g_signal == 0)
+		{
+			if (!set_exit(130))
+				ft_fprintf(2, "malloc failed\n");
+			break ;
+		}
+	}
 	exit_str = getenvstr("?");
 	code = ft_atoi(exit_str);
 	free(exit_str);
