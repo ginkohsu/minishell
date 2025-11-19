@@ -58,6 +58,22 @@ static bool	running(void)
 	return (true);
 }
 
+static void	shlvlup(void)
+{
+	char	**ptr;
+	char	*str;
+	int		lvl;
+
+	ptr = fetchenv("SHLVL");
+	if (!ptr || !ptr[0])
+		return ;
+	lvl = ft_atoi(ptr[0] + 6);
+	str = ft_strprep("SHLVL=", ft_itoa(++lvl));
+	if (str)
+		if (!addenv(str))
+			free(str);
+}
+
 int	main(int ac, char **av, char **env)
 {
 	char	*exit_str;
@@ -68,6 +84,7 @@ int	main(int ac, char **av, char **env)
 	signal(SIGINT, sig_handler);
 	signal(SIGQUIT, SIG_IGN);
 	initenv(env);
+	shlvlup();
 	while (running())
 		;
 	exit_str = getenvstr("?");

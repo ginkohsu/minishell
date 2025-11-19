@@ -22,13 +22,12 @@ void	execute_ast(t_ast *ast)
 {
 	t_pipe_ctx	ctx;
 
-	if (!ast || (ast->type == CMD && (!ast->cmd.argv || !ast->cmd.argv[0])))
-		return ;
 	ast_root(ast);
-	if (ast->type == CMD && is_builtin(ast->cmd.argv[0]) && !ast->cmd.redirs)
+	if (ast->type == CMD && !ast->cmd.redirs && ast->cmd.argv
+		&& ast->cmd.argv[0] && is_builtin(ast->cmd.argv[0]))
 	{
 		if (!set_exit(parent_builtin(&ast->cmd)))
-			exittool(ERR_ENV_CORRUPT, NULL, F_AST, 1);
+			ft_fprintf(2, "malloc failed\n");
 		return ;
 	}
 	ctx.total = preprocess(ast);
