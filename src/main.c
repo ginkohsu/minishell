@@ -6,23 +6,11 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/17 17:06:13 by jinxu             #+#    #+#             */
-/*   Updated: 2025/11/04 21:09:53 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/19 20:46:43 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-volatile sig_atomic_t	g_signal = 1;
-
-void	sig_handler(int signum)
-{
-	(void)signum;
-	g_signal = 0;
-	write(STDOUT_FILENO, "\n", 1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-}
 
 static void	process_input(char *line)
 {
@@ -100,8 +88,7 @@ int	main(int ac, char **av, char **env)
 	char	*exit_str;
 	int		code;
 
-	signal(SIGINT, sig_handler);
-	signal(SIGQUIT, SIG_IGN);
+	setup_signal_handlers();
 	initenv(env);
 	shlvlup();
 	if (ac >= 3 && !ft_strncmp(av[1], "-c", 3))

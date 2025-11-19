@@ -6,7 +6,7 @@
 /*   By: aloimusa <aloimusa@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:40:28 by aloimusa          #+#    #+#             */
-/*   Updated: 2025/10/09 13:40:28 by aloimusa         ###   ########.fr       */
+/*   Updated: 2025/11/19 20:42:31 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,5 +69,9 @@ void	safe_free(void **ptr);
 bool	set_exit(int code);
 void	wait_for_children(int *pid, int total);
 bool	is_path(char *prog);
+
+//signal 
+void    setup_signal_handlers(void);
+void	sig_handler(int signum);
 
 #endif
