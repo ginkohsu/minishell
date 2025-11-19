@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 15:41:59 by jinxu             #+#    #+#             */
-/*   Updated: 2025/11/06 00:15:22 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/19 19:14:43 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,12 @@ t_ast	*parse_pipeline(t_parser *parser)
 	if (check_pipe_syntax(parser) || check_redirect_syntax(parser))
 	{
 		tmp = ft_strdup("?=2");
-		if (!tmp || addenv(tmp) == -1)
+		if (!tmp)
+			return (NULL);
+		if (addenv(tmp) == -1)
 			exittool(ERR_ENV_CORRUPT, tmp, F_OBJ, 1);
+		else
+			free(tmp);
 		return (NULL);
 	}
 	left = parse_command(parser);
