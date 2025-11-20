@@ -6,11 +6,12 @@
 /*   By: aloimusa <aloimusa@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:04:00 by aloimusa          #+#    #+#             */
-/*   Updated: 2025/11/19 21:50:11 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/20 02:25:58 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <termios.h>
 
 static void	sighandler(int sig)
 {
@@ -90,6 +91,7 @@ static bool	cleanup_heredocs(t_redir *start, t_redir *end)
 	return (true);
 }
 
+/*
 void	heredoc(t_redir *redirs)
 {
 	struct sigaction	sa;
@@ -122,4 +124,51 @@ void	heredoc(t_redir *redirs)
 	}
 	sigaction(SIGINT, &old_sa, NULL);
 	sigaction(SIGQUIT, &old_quit, NULL);
+}
+*/
+
+void	heredoc(t_redir *redirs)
+{
+	struct sigaction	sa;
+	struct sigaction	old_sa;
+	struct sigaction	old_quit;
+	t_redir				*curr;
+	char				*file;
+	struct termios		term;
+	struct termios		original_term;
+
+	// Save and modify terminal settings to suppress control character echo
+	tcgetattr(STDIN_FILENO, &original_term);
+	term = original_term;
+	term.c_lflag &= ~ECHOCTL;  // This disables ^C, ^\ printing
+	tcsetattr(STDIN_FILENO, TCSANOW, &term);
+
+	ft_memset(&sa, 0, sizeof(sa));
+	ft_memset(&old_sa, 0, sizeof(old_sa));
+	ft_memset(&old_quit, 0, sizeof(old_quit));
+	sa.sa_handler = sighandler;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+	sigaction(SIGINT, &sa, &old_sa);
+	sa.sa_handler = SIG_IGN;	
+	sigaction(SIGQUIT, &sa, &old_quit);
+	g_signal = 1;
+	curr = redirs;
+	while (curr && g_signal)
+	{
+		if (curr->type == TOKEN_HEREDOC)
+		{
+			file = write_file(curr);
+			if (!file && cleanup_heredocs(redirs, curr))
+				break ;
+			free(curr->filename);
+			curr->filename = file;
+		}
+		curr = curr->next;
+	}
+	sigaction(SIGINT, &old_sa, NULL);
+	sigaction(SIGQUIT, &old_quit, NULL);
+	
+	// Restore original terminal settings
+	tcsetattr(STDIN_FILENO, TCSANOW, &original_term);
 }
