@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "execution.h"
+#include "minishell.h"
 
 static char	*get_path(char **prog);
 static char	*get_path2(char **prog, char *ptr);

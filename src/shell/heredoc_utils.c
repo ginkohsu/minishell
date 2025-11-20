@@ -42,3 +42,14 @@ char	*make_tmpfile(void)
 	}
 	return (ft_strapp(name, suffix));
 }
+
+bool	cleanup_heredocs(t_redir *start, t_redir *end)
+{
+	while (start && start != end)
+	{
+		if (start->type == TOKEN_HEREDOC && start->filename)
+			unlink(start->filename);
+		start = start->next;
+	}
+	return (true);
+}

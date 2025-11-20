@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "execution.h"
+#include "minishell.h"
 
 // execute single command without pipes
 void	only_child(t_command *cmd, int fd[3][2])

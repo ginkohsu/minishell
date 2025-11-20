@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "execution.h"
+#include "minishell.h"
 
 // check if string is valid env variable
 static int	is_valid_identifier(char *str)

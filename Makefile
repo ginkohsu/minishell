@@ -6,7 +6,7 @@ LIBFT := $(LIBFT_DIR)/libft.a
 INC := -I./include -I./libft/include -I.
 OBJ_DIR := obj
 
-SRCS := main.c ast_utils.c expand_utils.c expand_vars_dquote.c \
+SRCS := main.c shell.c ast_utils.c expand_utils.c expand_vars_dquote.c \
 	free.c handle_env.c handle_quote.c handle_redir.c handle_word.c \
 	lexer.c parse_args.c parse_command.c parse_free.c parse_main.c \
 	parse_pipeline.c parse_redir.c parser_otherutils.c parser_utils.c utils.c \
@@ -16,7 +16,7 @@ SRCS := main.c ast_utils.c expand_utils.c expand_vars_dquote.c \
 
 OBJS := $(addprefix $(OBJ_DIR)/,$(SRCS:.c=.o))
 
-VPATH := src:src/parsing:src/execution
+VPATH := src/shell:src/parsing:src/execution
 
 all: $(NAME)
 
@@ -26,7 +26,7 @@ $(LIBFT):
 $(NAME): $(OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_DIR) -lft -lreadline -o $(NAME)
 
-$(OBJ_DIR)/%.o: %.c include/ast.h include/execution.h include/minishell.h | $(OBJ_DIR)
+$(OBJ_DIR)/%.o: %.c include/ast.h include/minishell.h | $(OBJ_DIR)
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 $(OBJ_DIR):
