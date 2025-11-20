@@ -25,12 +25,10 @@ static bool	writing(int fd, t_redir *r, char **line)
 	char	*expanded;
 	int		len;
 
+	write(STDIN_FILENO, "> ", 2);
 	*line = get_next_line(STDIN_FILENO);
 	if (g_signal == 0)
-	{
 		safe_free((void **)line);
-		return (false);
-	}
 	len = ft_strlen(r->filename);
 	if (!*line || (ft_strncmp(r->filename, *line, len) == 0
 			&& (*line)[len] == '\n'))
