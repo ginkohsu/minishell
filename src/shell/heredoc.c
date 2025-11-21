@@ -25,12 +25,10 @@ static bool	writing(int fd, t_redir *r, char **line)
 	char	*expanded;
 	int		len;
 
+	write(STDIN_FILENO, "> ", 2);
 	*line = get_next_line(STDIN_FILENO);
 	if (g_signal == 0)
-	{
 		safe_free((void **)line);
-		return (false);
-	}
 	len = ft_strlen(r->filename);
 	if (!*line || (ft_strncmp(r->filename, *line, len) == 0
 			&& (*line)[len] == '\n'))
@@ -61,97 +59,58 @@ static char	*write_file(t_redir *r)
 		return (NULL);
 	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd == -1)
-	{
-		free(file);
-		return (NULL);
-	}
-	while (writing(fd, r, &line))
+		safe_free((void **)&file);
+	while (file && writing(fd, r, &line))
 	{
 		if (g_signal == 0)
 		{
-			close(fd);
 			unlink(file);
-			free(file);
-			return (NULL);
+			safe_free((void **)file);
+			break ;
 		}
 	}
-	close(fd);
+	safe_close(&fd);
 	safe_free((void **)&line);
 	return (file);
 }
 
-static bool	cleanup_heredocs(t_redir *start, t_redir *end)
-{
-	while (start && start != end)
-	{
-		if (start->type == TOKEN_HEREDOC && start->filename)
-			unlink(start->filename);
-		start = start->next;
-	}
-	return (true);
-}
-
-/*
-void	heredoc(t_redir *redirs)
+static void	in_session(bool val, struct sigaction *old_sa,
+		struct sigaction *old_quit, struct termios *old_term)
 {
 	struct sigaction	sa;
-	struct sigaction	old_sa;
-	struct sigaction	old_quit;
-	t_redir				*curr;
-	char				*file;
-
-	ft_memset(&sa, 0, sizeof(sa));
-	ft_memset(&old_sa, 0, sizeof(old_sa));
-	ft_memset(&old_quit, 0, sizeof(old_quit));
-	sa.sa_handler = sighandler;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = 0;
-	sigaction(SIGINT, &sa, &old_sa);
-	sigaction(SIGQUIT, &old_quit, NULL);
-	signal(SIGQUIT, SIG_IGN);
-	curr = redirs;
-	while (curr && g_signal)
-	{
-		if (curr->type == TOKEN_HEREDOC)
-		{
-			file = write_file(curr);
-			if (!file && cleanup_heredocs(redirs, curr))
-				break ;
-			free(curr->filename);
-			curr->filename = file;
-		}
-		curr = curr->next;
-	}
-	sigaction(SIGINT, &old_sa, NULL);
-	sigaction(SIGQUIT, &old_quit, NULL);
-}
-*/
-
-void	heredoc(t_redir *redirs)
-{
-	struct sigaction	sa;
-	struct sigaction	old_sa;
-	struct sigaction	old_quit;
-	t_redir				*curr;
-	char				*file;
 	struct termios		term;
-	struct termios		original_term;
 
-	// Save and modify terminal settings to suppress control character echo
-	tcgetattr(STDIN_FILENO, &original_term);
-	term = original_term;
-	term.c_lflag &= ~ECHOCTL;  // This disables ^C, ^\ printing
-	tcsetattr(STDIN_FILENO, TCSANOW, &term);
+	if (val)
+	{
+		tcgetattr(STDIN_FILENO, old_term);
+		term = *old_term;
+		term.c_lflag &= ~ECHOCTL;
+		tcsetattr(STDIN_FILENO, TCSANOW, &term);
+		ft_memset(&sa, 0, sizeof(sa));
+		ft_memset(old_sa, 0, sizeof(*old_sa));
+		ft_memset(old_quit, 0, sizeof(*old_quit));
+		sa.sa_handler = sighandler;
+		sigemptyset(&sa.sa_mask);
+		sa.sa_flags = 0;
+		sigaction(SIGINT, &sa, old_sa);
+		sa.sa_handler = SIG_IGN;
+		sigaction(SIGQUIT, &sa, old_quit);
+		return ;
+	}
+	sigaction(SIGINT, old_sa, NULL);
+	sigaction(SIGQUIT, old_quit, NULL);
+	tcsetattr(STDIN_FILENO, TCSANOW, old_term);
+}
 
-	ft_memset(&sa, 0, sizeof(sa));
-	ft_memset(&old_sa, 0, sizeof(old_sa));
-	ft_memset(&old_quit, 0, sizeof(old_quit));
-	sa.sa_handler = sighandler;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = 0;
-	sigaction(SIGINT, &sa, &old_sa);
-	sa.sa_handler = SIG_IGN;	
-	sigaction(SIGQUIT, &sa, &old_quit);
+void	heredoc(t_redir *redirs)
+{
+	struct sigaction	old_sa;
+	struct sigaction	old_quit;
+	struct termios		old_term;
+	t_redir				*curr;
+	char				*file;
+
+	in_session(true, &old_sa, &old_quit, &old_term);
 	g_signal = 1;
 	curr = redirs;
 	while (curr && g_signal)
@@ -166,9 +125,5 @@ void	heredoc(t_redir *redirs)
 		}
 		curr = curr->next;
 	}
-	sigaction(SIGINT, &old_sa, NULL);
-	sigaction(SIGQUIT, &old_quit, NULL);
-	
-	// Restore original terminal settings
-	tcsetattr(STDIN_FILENO, TCSANOW, &original_term);
+	in_session(false, &old_sa, &old_quit, &old_term);
 }

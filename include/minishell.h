@@ -12,14 +12,22 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include "execution.h"
+# include "ast.h"
 # include "libft.h"
 # include <dirent.h>
-# include <readline/history.h>
-# include <readline/readline.h>
+# include <errno.h>
+# include <fcntl.h>
 # include <signal.h>
+# include <stdbool.h>
+# include <stdint.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <string.h>
+# include <sys/types.h>
+# include <sys/wait.h>
+# include <unistd.h>
+# include <readline/history.h>
+# include <readline/readline.h>
 
 # define MAX_TOKENS 1000
 
@@ -77,5 +85,60 @@ t_token							*copy_to_heap(t_token *collected, int count,
 									int *token_count);
 char							*merge_adjacent_tokens(t_parser *parser,
 									char *current_arg, t_token *current_token);
+
+// execution entry
+void							execute_ast(t_ast *ast);
+void							ast_root(t_ast *ast);
+
+// child process type splitting
+void							only_child(t_command *cmd, int fd[3][2]);
+void							first_child(t_command *cmd, int fd[3][2]);
+void							last_child(t_command *cmd, int fd[3][2]);
+void							middle_child(t_command *cmd, int fd[3][2]);
+
+// non-builtin && builtin cmd execution
+int								is_builtin(char *name);
+int								parent_builtin(t_command *cmd);
+void							execute_command(t_command *cmd);
+
+// builtin functions
+int								ft_cd(char **av, int f);
+int								ft_exit(char **av, int f);
+int								ft_echo(char **av, int f);
+int								ft_export(char **av, int f);
+int								ft_unset(char **av, int f);
+int								ft_env(char **av, int f);
+int								ft_pwd(char **av, int f);
+
+// redirs
+void							setup_redirections(t_redir *redirs);
+void							heredoc(t_redir *redirs);
+char							*make_tmpfile(void);
+bool							cleanup_heredocs(t_redir *start, t_redir *end);
+
+// env table management
+int								initenv(char **src_env);
+char							**fetchenv(char *key);
+int								addenv(char *entry);
+int								rmenv(char *key);
+
+// utils
+int								preprocess(t_ast *ast);
+int								exittool(char *msg, void *obj, int action,
+									unsigned char code);
+void							safe_close(int *fd);
+void							safe_free(void **ptr);
+bool							set_exit(int code);
+void							wait_for_children(int *pid, int total);
+bool							is_path(char *prog);
+
+// signal
+void							setup_signal_handlers(void);
+void							sig_handler(int signum);
+
+// shell runtime
+void							init_shell(char **env);
+void							process_line(char *line, bool tty);
+bool							interactive_mode(void);
 
 #endif

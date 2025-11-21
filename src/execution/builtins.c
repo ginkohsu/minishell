@@ -10,7 +10,33 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "execution.h"
+#include "minishell.h"
+
+// exit shell with status code
+int	ft_exit(char **av, int f)
+{
+	int	i;
+
+	write(1, "exit\n", 5);
+	if (!av[1])
+		return (exittool(NULL, NULL, F_AST | F_ENV | TRUE_EXIT | f, 0));
+	i = 0;
+	if (av[1][i] == '+' || av[1][i] == '-')
+		i++;
+	while (av[1][i])
+		if (!ft_isdigit(av[1][i++]))
+			return (exittool(ERR_EXIT_NUMERIC, av[1],
+					P_OBJ | F_AST | F_ENV | TRUE_EXIT | f, 2));
+	errno = 0;
+	i = ft_atoi(av[1]);
+	if (errno == ERANGE)
+		return (exittool(ERR_EXIT_NUMERIC, av[1],
+				P_OBJ | F_AST | F_ENV | TRUE_EXIT | f, 2));
+	if (av[2])
+		return (exittool(ERR_EXIT_MANY_ARGS, NULL, F_AST | f, 1));
+	return (exittool(NULL, NULL, F_AST | F_ENV | TRUE_EXIT | f,
+			(unsigned char)i));
+}
 
 static int	update_cwd(char *s, int f)
 {
@@ -64,32 +90,6 @@ int	ft_cd(char **av, int f)
 	}
 	else
 		return (update_cwd(av[1], f));
-}
-
-// exit shell with status code
-int	ft_exit(char **av, int f)
-{
-	int	i;
-
-	write(1, "exit\n", 5);
-	if (!av[1])
-		return (exittool(NULL, NULL, F_AST | F_ENV | TRUE_EXIT | f, 0));
-	i = 0;
-	if (av[1][i] == '+' || av[1][i] == '-')
-		i++;
-	while (av[1][i])
-		if (!ft_isdigit(av[1][i++]))
-			return (exittool(ERR_EXIT_NUMERIC, av[1],
-					P_OBJ | F_AST | F_ENV | TRUE_EXIT | f, 2));
-	errno = 0;
-	i = ft_atoi(av[1]);
-	if (errno == ERANGE)
-		return (exittool(ERR_EXIT_NUMERIC, av[1],
-				P_OBJ | F_AST | F_ENV | TRUE_EXIT | f, 2));
-	if (av[2])
-		return (exittool(ERR_EXIT_MANY_ARGS, NULL, F_AST | f, 1));
-	return (exittool(NULL, NULL, F_AST | F_ENV | TRUE_EXIT | f,
-			(unsigned char)i));
 }
 
 // print arguments to stdout
