@@ -6,7 +6,7 @@
 /*   By: jinxu <jinxu@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:27:32 by jinxu             #+#    #+#             */
-/*   Updated: 2025/10/26 21:17:34 by jinxu            ###   ########.fr       */
+/*   Updated: 2025/11/21 17:58:58 by jinxu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,22 @@ char	*getenvstr(char *var)
 
 char	*expand_token_value_basic(t_token *token)
 {
+	char	*val;
+	char	*trimmed;
+
 	if (token->type == TOKEN_SQUOTE)
 		return (ft_strdup(token->value));
 	if (token->type == TOKEN_ENV_VAR)
-		return (getenvstr(token->value));
+	{
+		val = getenvstr(token->value);
+		if (val)
+		{
+			trimmed = ft_strtrim(val, " \t\n");
+			free(val);
+			return (trimmed);
+		}
+		return (ft_strdup(""));
+	}
 	else if (token->type == TOKEN_EXIT_STATUS)
 		return (getenvstr("?"));
 	else if (token->type == TOKEN_DQUOTE)
