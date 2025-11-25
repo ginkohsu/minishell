@@ -37,7 +37,6 @@ static char	*read_line(bool tty)
 	char	*line;
 	char	*tmp;
 
-	g_signal = 1;
 	line = NULL;
 	if (tty)
 	{
@@ -75,7 +74,6 @@ void	process_line(char *line, bool interactive)
 		free(line);
 	if (tree)
 		execute_ast(tree);
-	g_signal = 1;
 }
 
 bool	interactive_mode(bool tty)

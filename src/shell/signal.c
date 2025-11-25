@@ -22,6 +22,7 @@ void	sig_handler(int signum)
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
+	g_signal = 1;
 }
 
 void	setup_signal_handlers(void)
