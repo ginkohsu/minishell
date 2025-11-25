@@ -12,13 +12,13 @@
 
 #include "libft.h"
 
-void	arrsort(char **arr)
+char	**arrsort(char **arr)
 {
 	int	i;
 	int	j;
 
 	if (!arr)
-		return ;
+		return (NULL);
 	i = -1;
 	while (arr[++i] && arr[i + 1])
 	{
@@ -33,4 +33,5 @@ void	arrsort(char **arr)
 			}
 		}
 	}
+	return (arr);
 }

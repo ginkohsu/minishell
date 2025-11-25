@@ -13,12 +13,12 @@
 #ifndef LIBFT_H
 # define LIBFT_H
 
+# include <limits.h>
+# include <stdarg.h>
+# include <stdbool.h>
+# include <stdint.h>
 # include <stdlib.h>
 # include <unistd.h>
-# include <stdarg.h>
-# include <stdint.h>
-# include <limits.h>
-# include <stdbool.h>
 
 # ifndef BUFFERSIZE
 #  define BUFFERSIZE 42
@@ -30,7 +30,7 @@ typedef struct s_fprintf
 	int		fd;
 	size_t	len;
 	ssize_t	ret;
-}	t_fprintf;
+}			t_fprintf;
 
 /* stock functions */
 size_t		ft_strlen(const char *s);
@@ -71,7 +71,7 @@ char		**arrdup(char **src);
 char		**arrndup(char **src, size_t n);
 char		**arrstr(char **arr, const char *str);
 char		**arrstrn(char **arr, const char *str, size_t n);
-void		arrsort(char **arr);
+char		**arrsort(char **arr);
 void		free_array(char **arr);
 
 /* cursus functions */

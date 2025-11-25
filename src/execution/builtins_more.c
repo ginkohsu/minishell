@@ -54,13 +54,13 @@ int	ft_export(char **av, int f)
 
 	if (!av[1])
 	{
-		array = arrdup(fetchenv(NULL));
+		array = arrsort(arrdup(fetchenv(NULL)));
 		if (!array)
 			return (exittool(NULL, NULL, F_AST | F_ENV | f, 1));
-		arrsort(array);
 		i = -1;
 		while (array[++i])
-			ft_printf("declare -x %s\n", array[i]);
+			if (ft_strncmp(array[i], "?=", 2) != 0)
+				ft_printf("declare -x %s\n", array[i]);
 		return (exittool(NULL, array, F_ARR | F_AST | F_ENV | f, 0));
 	}
 	status = 0;

@@ -137,8 +137,8 @@ void							setup_signal_handlers(void);
 void							sig_handler(int signum);
 
 // shell runtime
-void							init_shell(char **env);
-void							process_line(char *line, bool tty);
-bool							interactive_mode(void);
+bool							init_shell(char **env);
+void							process_line(char *line, bool interactive);
+bool							interactive_mode(bool tty);
 
 #endif

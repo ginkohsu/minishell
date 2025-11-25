@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	init_shell(char **env)
+bool	init_shell(char **env)
 {
 	char	**ptr;
 	char	*str;
@@ -21,23 +21,25 @@ void	init_shell(char **env)
 	setup_signal_handlers();
 	initenv(env);
 	ptr = fetchenv("SHLVL");
-	if (!ptr || !ptr[0])
-		return ;
-	lvl = ft_atoi(ptr[0] + 6);
-	str = ft_strprep("SHLVL=", ft_itoa(++lvl));
-	if (str)
-		if (!addenv(str))
-			free(str);
+	if (ptr && ptr[0])
+	{
+		lvl = ft_atoi(ptr[0] + 6);
+		str = ft_strprep("SHLVL=", ft_itoa(++lvl));
+		if (str)
+			if (!addenv(str))
+				free(str);
+	}
+	return (isatty(STDIN_FILENO));
 }
 
-static char	*read_line(void)
+static char	*read_line(bool tty)
 {
 	char	*line;
 	char	*tmp;
 
 	g_signal = 1;
 	line = NULL;
-	if (isatty(STDIN_FILENO))
+	if (tty)
 	{
 		line = readline("minishell$ ");
 		if (!line)
@@ -55,11 +57,11 @@ static char	*read_line(void)
 	return (line);
 }
 
-void	process_line(char *line, bool tty)
+void	process_line(char *line, bool interactive)
 {
 	t_ast	*tree;
 
-	if (tty)
+	if (interactive)
 	{
 		if (!*line)
 		{
@@ -69,18 +71,18 @@ void	process_line(char *line, bool tty)
 		add_history(line);
 	}
 	tree = parse(line);
-	if (tty)
+	if (interactive)
 		free(line);
 	if (tree)
 		execute_ast(tree);
 	g_signal = 1;
 }
 
-bool	interactive_mode(void)
+bool	interactive_mode(bool tty)
 {
 	char	*line;
 
-	line = read_line();
+	line = read_line(tty);
 	if (!line)
 		return (false);
 	process_line(line, true);

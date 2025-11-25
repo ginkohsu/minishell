@@ -25,13 +25,15 @@ static int	get_exit_code(void)
 
 int	main(int ac, char **av, char **env)
 {
-	int	exit_code;
+	int		exit_code;
+	bool	tty;
 
-	init_shell(env);
+	tty = init_shell(env);
+	g_signal = 1;
 	if (ac >= 3 && !ft_strncmp(av[1], "-c", 3))
 		process_line(av[2], false);
 	else
-		while (interactive_mode())
+		while (interactive_mode(tty))
 			g_signal = 1;
 	exit_code = get_exit_code();
 	clear_history();
