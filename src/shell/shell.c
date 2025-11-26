@@ -83,11 +83,11 @@ bool	interactive_mode(bool tty)
 	line = read_line(tty);
 	if (!line)
 		return (false);
-	process_line(line, true);
-	if (g_signal == 0)
+	if (g_signal == 2)
 	{
 		if (!set_exit(130))
 			ft_fprintf(2, "malloc failed\n");
 	}
+	process_line(line, true);
 	return (true);
 }

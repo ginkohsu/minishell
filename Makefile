@@ -12,7 +12,7 @@ SRCS := main.c shell.c ast_utils.c expand_utils.c expand_vars_dquote.c \
 	parse_pipeline.c parse_redir.c parser_otherutils.c parser_utils.c utils.c \
 	parse_heredoc.c builtins.c builtins_more.c children.c \
 	environment.c exec_ast.c exec_cmd.c exec_utils.c exittool.c \
-	heredoc.c heredoc_utils.c redirection.c signal.c
+	heredoc.c heredoc_utils.c heredoc_signal.c redirection.c signal.c
 
 OBJS := $(addprefix $(OBJ_DIR)/,$(SRCS:.c=.o))
 

@@ -17,12 +17,11 @@ volatile sig_atomic_t	g_signal = 1;
 void	sig_handler(int signum)
 {
 	(void)signum;
-	g_signal = 0;
+	g_signal = 2;
 	write(STDOUT_FILENO, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-	g_signal = 1;
 }
 
 void	setup_signal_handlers(void)

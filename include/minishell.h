@@ -115,6 +115,10 @@ void							setup_redirections(t_redir *redirs);
 void							heredoc(t_redir *redirs);
 char							*make_tmpfile(void);
 bool							cleanup_heredocs(t_redir *start, t_redir *end);
+void							heredoc_sighandler(int sig);
+int								check_signal(void);
+void							in_session(bool active,
+									struct sigaction *old_sa);
 
 // env table management
 int								initenv(char **src_env);
