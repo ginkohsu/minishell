@@ -66,7 +66,7 @@ static int	process_and_check_quote(char **input_ptr, t_token *collected_tokens,
 {
 	if (check_unclosed_quote(*input_ptr))
 	{
-		printf("syntax error: unclosed quote\n");
+		ft_fprintf(2, "syntax error: unclosed quote\n");
 		return (0);
 	}
 	process_char_with_tracking(input_ptr, collected_tokens, count);
@@ -96,6 +96,6 @@ t_token	*tokenize(char *input, int *token_count)
 	collected_tokens[count].value = NULL;
 	count++;
 	if (*input_ptr && count == MAX_TOKENS)
-		printf("warnng:truncated after %d tokens\n", MAX_TOKENS - 1);
+		ft_fprintf(2, "warning: truncated after %d tokens\n", MAX_TOKENS - 1);
 	return (copy_to_heap(collected_tokens, count, token_count));
 }

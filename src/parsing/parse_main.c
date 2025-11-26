@@ -25,7 +25,7 @@ static t_ast	*parse_from_tokens(t_token *tokens, int count)
 	remaining = parser_peek(&parser, 0);
 	if (remaining && remaining->type != TOKEN_EOF)
 	{
-		printf("syntax error near '%s'\n", remaining->value);
+		ft_fprintf(2, "syntax error near '%s'\n", remaining->value);
 		free_ast(ast);
 		return (NULL);
 	}

@@ -25,12 +25,12 @@ static int	check_redirect_syntax(t_parser *parser)
 			next_token = &parser->tokens[i + 1];
 			if (next_token->type == TOKEN_EOF)
 			{
-				printf("syntax error near unexpected token 'newline'\n");
+				ft_fprintf(2, "syntax error near unexpected token 'newline'\n");
 				return (1);
 			}
 			if (!is_string_token(next_token))
 			{
-				printf("syntax error near unexpected token '%s'\n",
+				ft_fprintf(2, "syntax error near unexpected token '%s'\n",
 					next_token->value);
 				return (1);
 			}
@@ -47,7 +47,7 @@ static int	check_pipe_syntax(t_parser *parser)
 	i = 0;
 	if (parser->token_count > 0 && parser->tokens[0].type == TOKEN_PIPE)
 	{
-		printf("syntax error near unexpected token `|'\n");
+		ft_fprintf(2, "syntax error near unexpected token `|'\n");
 		return (1);
 	}
 	while (i < parser->token_count)
@@ -57,7 +57,7 @@ static int	check_pipe_syntax(t_parser *parser)
 			if ((i == parser->token_count - 1) || (i + 1 < parser->token_count
 					&& parser->tokens[i + 1].type == TOKEN_PIPE))
 			{
-				printf("syntax error near unexpected token `|'\n");
+				ft_fprintf(2, "syntax error near unexpected token `|'\n");
 				return (1);
 			}
 		}
