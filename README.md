@@ -1,6 +1,6 @@
 # minishell
 
-![demo](https://i.imgur.com/YTyL1eg.gif)
+![demo](https://i.imgur.com/9plY9Po.gif)
 
 ## what is this
 
